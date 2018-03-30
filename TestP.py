@@ -15,12 +15,13 @@ userData = db['userData']
 #json_data = json.load(open('primer-dataset.json')) 
 #print(json.dumps(json_data,sort_keys=True,indent=2)) 
 
-#Response login
+#Response regis
 Response = {
             "status":"success",
             "cookie_session":"KFIOGMREOIVK439050I",
             "admin":"yes"
 }
+
 
 
 def get(post_id):
@@ -75,9 +76,14 @@ jsondata = json.loads( r.json() )
 username = jsondata['username']
 #username = json.loads(r.json())['username']
 
+#Regis case
 if userData.find_one({'username' : username}) == None:
     insert(r.json)
     r = requests.post(url, Response)
+else :
+    r = requests.post(url, Response)
+
+    
 
 
 
