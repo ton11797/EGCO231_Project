@@ -71,17 +71,21 @@ def insert(JSON):
 
 #main
 import requests
-r = requests.get('serverport')
-jsondata = json.loads( r.json() )
-username = jsondata['username']
-#username = json.loads(r.json())['username']
+r = requests.get(url) 
+username = json.loads(r.json())['username']
+password = json.loads(r.json())['username']
 
-#Regis case
-if userData.find_one({'username' : username}) == None:
-    insert(r.json)
-    r = requests.post(url, Response)
-else :
-    r = requests.post(url, Response)
+
+#Login case
+if userData.find_one({"$and":[{'username' : username,'password' : password}]}) :
+    print("in")
+    #r = requests.post(url, Response)
+else:
+    #r = requests.post(url, Response)
+
+
+
+    
 
     
 
