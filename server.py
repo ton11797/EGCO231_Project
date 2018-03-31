@@ -31,9 +31,6 @@ def printdata(data):
 # database
 class database:
 	def __init__(self):
-		self.room = self.db['Room']
-		self.session = self.db['loginSession ']
-		self.user = self.db['userData']
 		config = load_config()
 		login = config['dbuser']+config['dbpass']
 		if not(login==""):
@@ -41,6 +38,9 @@ class database:
 		# self.client = MongoClient('localhost', 27017)
 		self.client = MongoClient('mongodb://'+ login + config['server_address']+':'+config['port'])
 		self.db = self.client['EGCO']
+		self.room = self.db['Room']
+		self.session = self.db['loginSession ']
+		self.user = self.db['userData']
 	def have_user(self,username):
 		
 		if str(self.user.find_one({"username":username})) == "None":
