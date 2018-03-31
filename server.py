@@ -36,7 +36,7 @@ class database:
 			return json.dumps(respond)
 		else:
 			self.user.insert_one({"username":username,"password":password})
-			respond = {"status":"sucess","error":"username exist"}
+			respond = {"status":"sucess","error":"none"}
 			return json.dumps(respond)
 
 	def rand_string(self,length, char_set=10):
@@ -99,7 +99,16 @@ printdata("test\n")
 
 # ///////////////////////////////////////////////////////
 # register
-
+def Register(data):
+	if (DB.have_user(data["Username"])):
+		respond = {"status":"fail","error":"This username is already in use"}
+		return json.dumps(respond)
+	else:
+		if(len(data["Password"])<17 and len(data["Password"])>7):
+			return DB.register(str(data["Password"]),str(data["Password"]))
+		else:
+			respond = {"status":"fail","error":"your password must contain between 8 and 15 letters and numbers"}
+			return json.dumps(respond)
 
 # ///////////////////////////////////////////////////////
 # get room
@@ -112,7 +121,7 @@ app = Flask(__name__)
 
 @app.route('/login', methods = ['POST'])
 def api_login():
-    if request.method =='POST':
+	if request.method =='POST':
 		if request.headers['Content-Type'] == 'application/json':
 			return "JSON Message: " + json.dumps(request.json)
 		else:
@@ -123,7 +132,7 @@ def api_login():
 def api_regis():
 	if request.method =='POST':
 		if request.headers['Content-Type'] == 'application/json':
-			return "JSON Message: " + json.dumps(request.json)
+			return Register(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
 	else: return "fail_POST_REGIS"
