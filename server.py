@@ -2,9 +2,13 @@
 from pymongo import MongoClient
 import random
 import string
+
+from datetime import datetime, time as datetime_time, timedelta
+import pprint
 import json
 
 from flask import Flask, url_for,Response,request,json
+
 
 # ////////////////////////////////////////////////////////
 # load config
@@ -27,6 +31,9 @@ def printdata(data):
 # database
 class database:
 	def __init__(self):
+		self.room = self.db['Room']
+		self.session = self.db['loginSession ']
+		self.user = self.db['userData']
 		config = load_config()
 		login = config['dbuser']+config['dbpass']
 		if not(login==""):
@@ -35,7 +42,7 @@ class database:
 		self.client = MongoClient('mongodb://'+ login + config['server_address']+':'+config['port'])
 		self.db = self.client['EGCO']
 	def have_user(self,username):
-		self.user = self.db['userData']
+		
 		if str(self.user.find_one({"username":username})) == "None":
 			return False
 		else:
@@ -56,23 +63,20 @@ class database:
 		return output
 
 	def get_room(self):
-		self.room = self.db['room']
 		collect = self.room.find({})
 		array =[]
 		for c in collect:
 			del c['_id']
 			array.append(c)
 		respond = {"available-room":array}
-		return json.dumps(respond)
+		return respond
 
 	def genCookies(self,username):
-		self.session = self.db['loginSession ']
 		self.random = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
 		self.session.insert_one({"username":username,"cookies":self.random})
 		return self.random
 
 	def login(self,username,password):
-		self.user = self.db['userData']
 		if self.user.find_one({"username":username,"password":password})=="None":
 			respond = {"status":"Fail","error":"username or password not match"}
 			return json.dumps(respond)
@@ -84,21 +88,66 @@ class database:
 			respond = {"status":"sucess","error":"none","cookie_session":self.cookies,"admin":self.admin}
 			return json.dumps(respond)
 
+	def insert(self,json):
+		self.room.insert_one(json)
 
 
+JSONINPUT = json.load(open('EGCO231_getroom.json'))
 DB = database()
+#DB.insert(JSONINPUT)
 # print(DB.have_user("admin"))
-# print(DB.get_room())
-print(DB.login("admin","1234"))
-printdata("test\n")
-printdata("test\n")
-printdata("test\n")
-printdata("test\n")
-printdata("test\n")
+#print(DB.login("admin","123"))
+#printdata("test\n")
 
 # ///////////////////////////////////////////////////////
 # book
+def findkeys(node, kv):
+    if isinstance(node, list):
+        for i in node:
+            for x in findkeys(i, kv):
+               yield x
+    elif isinstance(node, dict):
+        if kv in node:
+            yield node[kv]
+        for j in node.values():
+            for x in findkeys(j, kv):
+                yield x
 
+def checkBook(input):# can Book or not
+	for data in input:
+		room = data['Room']
+		date = data['Data_Time']
+		room_db = list(findkeys(DB.get_room(), "Room"))
+		date_db = list(findkeys(DB.get_room(), "Data_Time"))
+
+		if room in room_db :
+			if date in date_db :
+				return False
+			else:
+				for d in date_db:
+					date_time1 = d.split()
+					date_time2 = date.split()
+					if date_time2[0] in date_time1[0]: #date check
+						db_s,db_e = [datetime.strptime(t, '%H:%M') for t in date_time1[1].split('-')]
+						s,e = [datetime.strptime(t, '%H:%M') for t in date_time2[1].split('-')]
+						if ( (s < db_s and e <= db_s) or (s >= db_e and e > db_e) ) :
+							return True
+		return True
+
+def Book(JSONINPUT):
+	data = JSONINPUT['Data']
+	cs = JSONINPUT['cookie_session']
+	respond = {"status":"sucess","error":"none"}
+	respond_err = {"status":"fail","error":"Have reservations !!"}
+
+	if checkBook(data) :
+		DB.insert(JSONINPUT) 
+		return json.dumps(respond)
+	return json.dumps(respond_err)
+
+JSONINPUT = json.load(open('egco231_putroom.json'))
+#print(list(findkeys(JSONINPUT , "Room")))
+print(Book(JSONINPUT))
 
 # ///////////////////////////////////////////////////////
 # login
@@ -152,7 +201,7 @@ def api_regis():
 @app.route('/book', methods = ['POST'])
 def api_book():
 	if request.method =='POST':
-		if request.headers['Content-Type'] == 'application/json':
+		if (request.headers['Content-Type'] == 'application/json'):
 				return "JSON Message: " + json.dumps(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
@@ -161,7 +210,7 @@ def api_book():
 @app.route('/cancel', methods = ['POST'])
 def api_cancel():
 	if request.method =='POST':
-		if request.headers['Content-Type'] == 'application/json':
+		if (request.headers['Content-Type'] == 'application/json'):
 				return "JSON Message: " + json.dumps(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
