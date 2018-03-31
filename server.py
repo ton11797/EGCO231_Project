@@ -1,6 +1,6 @@
 #import
 from pymongo import MongoClient
-import datetime
+from datetime import datetime, time as datetime_time, timedelta
 import pprint
 import json
 
@@ -33,13 +33,28 @@ def get_room():
     return json_data['available-room']
 #print(json.dumps(get_room(),sort_keys=True,indent=2))
 
+def time_diff(start, end):
+    if isinstance(start, datetime_time): # convert to datetime
+        assert isinstance(end, datetime_time)
+        start, end = [datetime.combine(datetime.min, t) for t in [start, end]]
+    if start <= end: # e.g., 10:33:26-11:15:49
+        return end - start
+    else: # end < start e.g., 23:55:00-00:25:00
+        end += timedelta(1) # +day
+        assert end > start
+        return end - start
 
-def checkBook():
+def Time_diff(Bound):
+    s,e = [datetime.strptime(t, '%H:%M') for t in Bound.split('-')]
+    return time_diff(s,e)
+
+
+def checkBook(JSONINPUT):
     #input = json.load(open(in)) 
     inJson = {
     'Username': 'nar',
     'Room':'6272',
-    'Date_Time':"25/4/2561 12:00-13:00"
+    'Date_Time':"25/4/2561 12:00-15:00"
     }
 
     input = inJson
@@ -62,36 +77,23 @@ def checkBook():
                 #print(s['Data_Time'])
                 dateTime = s['Data_Time'].split()
                 d = date.split()
-
-               # dt = datetime.datetime.combine(d, t)
                 
-                if dateTime == d:
-                    return False
-                else:
-                    time = dateTime[1].split('-')
-                    st = time[0].split(':')
-                    et = time[1].split(':')
-                    t_s = datetime.time(int(st[0]),int(st[1]), 00)
-                    t_e = datetime.time(int(et[0]),int(et[1]), 00)
-                    hr = t_s-t_e
-                    print(hr)
-
-                    inputtime = d[1].split('-')
-                    sit = inputtime[0]
-                    eit = inputtime[1]
-                    it = datetime.time(sit, eit, 00)
-
-                    if it != t  :#and ihr < hr:
+                if dateTime != d:                   
+                    s,e = [datetime.strptime(t, '%H:%M') for t in dateTime[1].split('-')]
+                    iss,ie = [datetime.strptime(t, '%H:%M') for t in d[1].split('-')]
+                    time = Time_diff(dateTime[1])
+                    itime = Time_diff(d[1])
+                    if(iss < s and ie > e and itime < time):
                         #insert(Json) 
                         print('in')
-                        print(json.dumps(Json,sort_keys=True,indent=2))
-        #print(json.dumps(Json,sort_keys=True,indent=2))
+                        # print(json.dumps(Json,sort_keys=True,indent=2))
+                        return True
+                return False
+        #insert(Json) 
+        # print(json.dumps(Json,sort_keys=True,indent=2))
         return True
 
 checkBook()
- 
-
-
 # ///////////////////////////////////////////////////////
 # login
 
