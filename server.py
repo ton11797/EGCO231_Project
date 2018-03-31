@@ -25,10 +25,15 @@ def printdata(data):
 # database
 class database:
 	def __init__(self):
-		self.client = MongoClient('localhost', 27017)
-		self.db = self.client['EGCO']
-	def have_user(self,username):
+		self.URI = "mongodb+srv://root:root@egco231-ettdb.mongodb.net" 
+		self.client = MongoClient(self.URI)
+		self.db = self.client['EGCO231']
 		self.user = self.db['userData']
+		self.room = self.db['Room']
+		self.session = self.db['loginSession ']
+
+	def have_user(self,username):
+		
 		if str(self.user.find_one({"username":username})) == "None":
 			return False
 		else:
@@ -39,7 +44,7 @@ class database:
 			respond = {"status":"Fail","error":"username exist"}
 			return json.dumps(respond)
 		else:
-			self.user.insert_one({"username":username,"password":password})
+			self.user.insert_one({"Username":username,"Password":password})
 			respond = {"status":"sucess","error":"username exist"}
 			return json.dumps(respond)
 
@@ -49,23 +54,20 @@ class database:
 		return output
 
 	def get_room(self):
-		self.room = self.db['room']
 		collect = self.room.find({})
 		array =[]
 		for c in collect:
 			del c['_id']
 			array.append(c)
 		respond = {"available-room":array}
-		return json.dumps(respond)
+		return respond
 
 	def genCookies(self,username):
-		self.session = self.db['loginSession ']
 		self.random = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
 		self.session.insert_one({"username":username,"cookies":self.random})
 		return self.random
 
 	def login(self,username,password):
-		self.user = self.db['userData']
 		if self.user.find_one({"username":username,"password":password})=="None":
 			respond = {"status":"Fail","error":"username or password not match"}
 			return json.dumps(respond)
@@ -77,24 +79,23 @@ class database:
 			respond = {"status":"sucess","error":"none","cookie_session":self.cookies,"admin":self.admin}
 			return json.dumps(respond)
 
+	def insert(self,json):
+		self.room.insert_one(json)
 
 
+JSONINPUT = json.load(open('EGCO231_getroom.json'))
 DB = database()
+#DB.insert(JSONINPUT)
 # print(DB.have_user("admin"))
-# print(DB.get_room())
-print(DB.login("admin","123"))
-printdata("test\n")
-printdata("test\n")
-printdata("test\n")
-printdata("test\n")
-printdata("test\n")
+
+#print(DB.login("admin","123"))
+#printdata("test\n")
+
+
+
 
 # ///////////////////////////////////////////////////////
 # book
-def get_room():
-    json_data = json.load(open('EGCO231_getroom.json')) 
-    return json_data['available-room']
-#print(json.dumps(get_room(),sort_keys=True,indent=2))
 
 def time_diff(start, end):
     if isinstance(start, datetime_time): # convert to datetime
@@ -107,60 +108,66 @@ def time_diff(start, end):
         assert end > start
         return end - start
 
-def Time_diff(Bound):
-    s,e = [datetime.strptime(t, '%H:%M') for t in Bound.split('-')]
-    return time_diff(s,e)
+def findkeys(node, kv):
+    if isinstance(node, list):
+        for i in node:
+            for x in findkeys(i, kv):
+               yield x
+    elif isinstance(node, dict):
+        if kv in node:
+            yield node[kv]
+        for j in node.values():
+            for x in findkeys(j, kv):
+                yield x
+
+# s,e = [datetime.strptime(t, '%H:%M') for t in dateTime[1].split('-')]
+# iss,ie = [datetime.strptime(t, '%H:%M') for t in d[1].split('-')]
+
+def checkBook(input):
 
 
-def checkBook(JSONINPUT):
-    #input = json.load(open(in)) 
-    inJson = {
-    'Username': 'nar',
-    'Room':'6272',
-    'Date_Time':"25/4/2561 12:00-15:00"
-    }
-    
-    respond = {"status":"sucess","error":"none"}
-    respond_err = {"status":"fail","error":"Have reservations !!"}
+	for data in input:
+		room = data['Room']
+		date = data['Data_Time']
 
-    input = inJson
-    user = input['Username']
-    room = input['Room']
-    date = input['Date_Time']
+		room_db = list(findkeys(DB.get_room(), "Room"))
+		date_db = list(findkeys(DB.get_room(), "Data_Time"))
 
-    Json = {
-    'Username' : user,
-    'Room': room,
-    'Data_Time' : date
-    }
+		if room in room_db :
+			if date in date_db :
+				return False
+			else:
+				for d in date_db:
+					date_time1 = d.split()
+					date_time2 = date.split()
+					if date_time2[0] in date_time1[0]: #date check
+						db_s,db_e = [datetime.strptime(t, '%H:%M') for t in date_time1[1].split('-')]
+						# timedb_diff = time_diff(db_s, db_e)
+						s,e = [datetime.strptime(t, '%H:%M') for t in date_time2[1].split('-')]
+						# time_diff = time_diff(s, e)
 
+						if ( (s < db_s and e <= db_s) or (s >= db_e and e > db_e) ) :
+							return True
+			
+		return True
 
-    for r in get_room() :
-        #print(r['Room'])
-        #print(r['schedule'])
-        if room == r['Room'] :
-            for s in r['schedule']:
-                #print(s['Data_Time'])
-                dateTime = s['Data_Time'].split()
-                d = date.split()
-                
-                if dateTime != d:                   
-                    s,e = [datetime.strptime(t, '%H:%M') for t in dateTime[1].split('-')]
-                    iss,ie = [datetime.strptime(t, '%H:%M') for t in d[1].split('-')]
-                    time = Time_diff(dateTime[1])
-                    itime = Time_diff(d[1])
-                    if(iss < s and ie > e and itime < time):
-                        #insert(Json) 
-                        print('in')
-                        # print(json.dumps(Json,sort_keys=True,indent=2))
-                        
-                        return json.dumps(respond)
-                return json.dumps(respond_err)
-        #insert(Json) 
-        # print(json.dumps(Json,sort_keys=True,indent=2))
-        return json.dumps(respond)
+#checkBook('JSONINPUT')
+def Book(JSONINPUT):
+	data = JSONINPUT['Data']
+	cs = JSONINPUT['cookie_session']
+	respond = {"status":"sucess","error":"none"}
+	respond_err = {"status":"fail","error":"Have reservations !!"}
 
-checkBook('JSONINPUT')
+	if checkBook(data) :
+		DB.insert(JSONINPUT) 
+		return json.dumps(respond)
+	return json.dumps(respond_err)
+
+JSONINPUT = json.load(open('egco231_putroom.json'))
+#print(list(findkeys(JSONINPUT , "Room")))
+print(Book(JSONINPUT))
+	
+
 # ///////////////////////////////////////////////////////
 # login
 
@@ -184,9 +191,8 @@ app = Flask(__name__)
 
 @app.route('/login', methods = ['POST'])
 def api_login():
-    if request.method =='POST':
-		if request.headers['Content-Type'] == 'application/json':
-			return "JSON Message: " + json.dumps(request.json)
+	if request.method =='POST':
+		if request.headers['Content-Type'] == 'application/json' : return "JSON Message: " + json.dumps(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
 	else: return "fail_POST_LOGIN"
@@ -194,7 +200,7 @@ def api_login():
 @app.route('/regis', methods = ['POST'])
 def api_regis():
 	if request.method =='POST':
-		if request.headers['Content-Type'] == 'application/json':
+		if (request.headers['Content-Type'] == 'application/json'):
 			return "JSON Message: " + json.dumps(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
@@ -203,7 +209,7 @@ def api_regis():
 @app.route('/book', methods = ['POST'])
 def api_book():
 	if request.method =='POST':
-		if request.headers['Content-Type'] == 'application/json':
+		if (request.headers['Content-Type'] == 'application/json'):
 				return "JSON Message: " + json.dumps(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
@@ -212,7 +218,7 @@ def api_book():
 @app.route('/cancel', methods = ['POST'])
 def api_cancel():
 	if request.method =='POST':
-		if request.headers['Content-Type'] == 'application/json':
+		if (request.headers['Content-Type'] == 'application/json'):
 				return "JSON Message: " + json.dumps(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
