@@ -39,7 +39,7 @@ class database:
 		self.client = MongoClient('mongodb://'+ login + config['server_address']+':'+config['port'])
 		self.db = self.client['EGCO']
 		self.room = self.db['Room']
-		self.session = self.db['loginSession ']
+		self.session = self.db['loginSession']
 		self.user = self.db['userData']
 	def have_user(self,username):
 		
@@ -69,7 +69,7 @@ class database:
 			del c['_id']
 			array.append(c)
 		respond = {"available-room":array}
-		return respond
+		return json.dumps(respond)
 
 	def genCookies(self,username):
 		self.random = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
@@ -91,14 +91,11 @@ class database:
 	def insert(self,json):
 		self.room.insert_one(json)
 
+	def whois(self,cookies):
+		return self.session.find_one({"cookies":cookies})['username']
 
-JSONINPUT = json.load(open('EGCO231_getroom.json'))
 DB = database()
-#DB.insert(JSONINPUT)
-# print(DB.have_user("admin"))
-#print(DB.login("admin","123"))
-#printdata("test\n")
-
+print(DB.whois("WcIiXtzWCxVvo3Hwl33C9EPThCLbafpq"))
 # ///////////////////////////////////////////////////////
 # book
 def findkeys(node, kv):
