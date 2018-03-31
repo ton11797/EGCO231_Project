@@ -3,6 +3,11 @@ import datetime
 import pprint
 import json
 from bson.objectid import ObjectId
+from flask import Flask, request
+from flask_restful import Resource, Api
+from sqlalchemy import create_engine
+from json import dumps
+from flask.ext.jsonpify import jsonify
 
 #Variable
 URI = "mongodb+srv://root:root@egco231-ettdb.mongodb.net"
@@ -11,52 +16,27 @@ db       = client['EGCO231']
 room     = db['Room']
 userData = db['userData']
 
+app = Flask(__name__)
+api = Api(app)
 
 #json_data = json.load(open('primer-dataset.json')) 
 #print(json.dumps(json_data,sort_keys=True,indent=2)) 
 
-#Response regis
-Response = {
-            "status":"success",
-            "cookie_session":"KFIOGMREOIVK439050I",
-            "admin":"yes"
-}
+
+#Response login 
+Response = { 
+            "status":"success", 
+            "cookie_session":"KFIOGMREOIVK439050I", 
+            "admin":"yes" 
+} 
 
 
 
-def get(post_id):
-    # Convert from string to ObjectId:
-    document = client.db.collection.find_one({'_id': ObjectId(post_id)}) 
+def print(posts):
+    for post in posts.find():
+        pprint.pprint(post) 
 
-def insert(room,Name,date,start,end):
-    data = {
-            "available-room": [
-                {
-                "Room": "6272",
-                "schedule": [
-                    {
-                    "Username": "narit",
-                    "Data_Time": "25/4/2561 12:00-16:00"
-                    },
-                    {
-                    "Username": "narit",
-                    "Data Time": "28/4/2561 12:00-16:00"
-                    }
-                ]
-                },
-                {
-                "Room": "6273",
-                "schedule": []
-                },
-                {
-                "Room": "6274",
-                "schedule": []
-                }
-            ]
-            }
-    room.insert_one(data)
-
-
+#for Test
 def insert(username,password):
     data = {
             'username':username,
@@ -64,29 +44,25 @@ def insert(username,password):
     }
     userData.insert_one(data)
 
-def insert(JSON):
+#Register
+def Jinsert(JSON):
     userData.insert_one(JSON)
 
 
-
 #main
-import requests
-r = requests.get(url) 
-username = json.loads(r.json())['username']
-password = json.loads(r.json())['username']
+Name = 'oat'
 
-
-#Login case
-if userData.find_one({"$and":[{'username' : username,'password' : password}]}) :
-    print("in")
-    #r = requests.post(url, Response)
-else:
-    #r = requests.post(url, Response)
-
-
-
-    
-
+r = requests.get(url)  
+username = json.loads(r.json())['username'] 
+password = json.loads(r.json())['username'] 
+ 
+ 
+#Login case 
+if userData.find_one({"$and":[{'username' : username,'password' : password}]}) : 
+    print("in") 
+    #r = requests.post(url, Response) 
+else: 
+    #r = requests.post(url, Response) 
     
 
 
