@@ -1,5 +1,19 @@
 #import
+import pprint 
+import json 
+from bson.objectid import ObjectId 
+from flask import Flask, request 
+from flask_restful import Resource, Api 
+from sqlalchemy import create_engine 
+from json import dumps 
+from flask.ext.jsonpify import jsonify 
 
+#Variable 
+URI = "mongodb+srv://root:root@egco231-ettdb.mongodb.net" 
+client = MongoClient(URI) 
+db       = client['EGCO231'] 
+room     = db['Room'] 
+userData = db['userData'] 
 
 
 # ////////////////////////////////////////////////////////
@@ -16,6 +30,7 @@
 
 # ///////////////////////////////////////////////////////
 # book
+    
 
 
 # ///////////////////////////////////////////////////////
@@ -25,7 +40,7 @@
 # ///////////////////////////////////////////////////////
 # cancel
 
-asdas
+
 # ///////////////////////////////////////////////////////
 # register
 
