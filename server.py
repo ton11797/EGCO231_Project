@@ -1,6 +1,13 @@
-#import
+#import\
 
+#print all data parameter string
+def printdata(data):
+    file = open("log.txt","w")
+    print(data)
+    file.write(data)
+    file.close
 
+#printdata("test")
 
 # ////////////////////////////////////////////////////////
 # load config
