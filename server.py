@@ -3,16 +3,6 @@ from pymongo import MongoClient
 import random
 import string
 import json
-#Hello word
-
-#print all data parameter string
-def printdata(data):
-    file = open("log.txt","w")
-    print(data)
-    file.write(data)
-    file.close
-
-#printdata("test")
 
 # ////////////////////////////////////////////////////////
 # load config
@@ -20,8 +10,11 @@ def printdata(data):
 
 # ///////////////////////////////////////////////////////
 # log
-
-
+def printdata(data):
+    file = open("log.txt","a")
+    print(data,end="")
+    file.write(data)
+    file.close
 # ///////////////////////////////////////////////////////
 # database
 class database:
@@ -84,6 +77,11 @@ DB = database()
 # print(DB.have_user("admin"))
 # print(DB.get_room())
 print(DB.login("admin","123"))
+printdata("test\n")
+printdata("test\n")
+printdata("test\n")
+printdata("test\n")
+printdata("test\n")
 
 # ///////////////////////////////////////////////////////
 # book
