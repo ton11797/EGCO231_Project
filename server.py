@@ -87,27 +87,11 @@ JSONINPUT = json.load(open('EGCO231_getroom.json'))
 DB = database()
 #DB.insert(JSONINPUT)
 # print(DB.have_user("admin"))
-
 #print(DB.login("admin","123"))
 #printdata("test\n")
 
-
-
-
 # ///////////////////////////////////////////////////////
 # book
-
-def time_diff(start, end):
-    if isinstance(start, datetime_time): # convert to datetime
-        assert isinstance(end, datetime_time)
-        start, end = [datetime.combine(datetime.min, t) for t in [start, end]]
-    if start <= end: # e.g., 10:33:26-11:15:49
-        return end - start
-    else: # end < start e.g., 23:55:00-00:25:00
-        end += timedelta(1) # +day
-        assert end > start
-        return end - start
-
 def findkeys(node, kv):
     if isinstance(node, list):
         for i in node:
@@ -120,16 +104,10 @@ def findkeys(node, kv):
             for x in findkeys(j, kv):
                 yield x
 
-# s,e = [datetime.strptime(t, '%H:%M') for t in dateTime[1].split('-')]
-# iss,ie = [datetime.strptime(t, '%H:%M') for t in d[1].split('-')]
-
-def checkBook(input):
-
-
+def checkBook(input):# can Book or not
 	for data in input:
 		room = data['Room']
 		date = data['Data_Time']
-
 		room_db = list(findkeys(DB.get_room(), "Room"))
 		date_db = list(findkeys(DB.get_room(), "Data_Time"))
 
@@ -142,16 +120,11 @@ def checkBook(input):
 					date_time2 = date.split()
 					if date_time2[0] in date_time1[0]: #date check
 						db_s,db_e = [datetime.strptime(t, '%H:%M') for t in date_time1[1].split('-')]
-						# timedb_diff = time_diff(db_s, db_e)
 						s,e = [datetime.strptime(t, '%H:%M') for t in date_time2[1].split('-')]
-						# time_diff = time_diff(s, e)
-
 						if ( (s < db_s and e <= db_s) or (s >= db_e and e > db_e) ) :
 							return True
-			
 		return True
 
-#checkBook('JSONINPUT')
 def Book(JSONINPUT):
 	data = JSONINPUT['Data']
 	cs = JSONINPUT['cookie_session']
@@ -166,7 +139,6 @@ def Book(JSONINPUT):
 JSONINPUT = json.load(open('egco231_putroom.json'))
 #print(list(findkeys(JSONINPUT , "Room")))
 print(Book(JSONINPUT))
-	
 
 # ///////////////////////////////////////////////////////
 # login
