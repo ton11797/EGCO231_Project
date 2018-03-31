@@ -8,8 +8,13 @@ from flask import Flask, url_for,Response,request,json
 
 # ////////////////////////////////////////////////////////
 # load config
-
-
+def load_config():
+	file_config = open("config.conf","r")
+	for line in file_config:
+		buf = line.strip().split("=")
+		read_config = {}
+		read_config[buf[0]] = buf[1]
+	return read_config
 # ///////////////////////////////////////////////////////
 # log
 def printdata(data):
@@ -112,7 +117,8 @@ def Register(data):
 
 # ///////////////////////////////////////////////////////
 # get room
-
+def Get_room():
+	return DB.get_room()
 
 # ///////////////////////////////////////////////////////
 # Route
@@ -156,7 +162,7 @@ def api_cancel():
 	else: return "fail_POST_CANCEL"
 @app.route('/list', methods = ['GET'])
 def api_list():
-	if request.method =='GET': return DB.get_room()
+	if request.method =='GET': return Get_room()
 	else: return "fail_POST_CANCEL"
 if __name__ == '__main__':
 	app.run()
