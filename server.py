@@ -33,6 +33,7 @@ def get_room():
     return json_data['available-room']
 #print(json.dumps(get_room(),sort_keys=True,indent=2))
 
+
 def checkBook():
     #input = json.load(open(in)) 
     inJson = {
@@ -52,6 +53,7 @@ def checkBook():
     'Data_Time' : date
     }
 
+
     for r in get_room() :
         #print(r['Room'])
         #print(r['schedule'])
@@ -60,20 +62,26 @@ def checkBook():
                 #print(s['Data_Time'])
                 dateTime = s['Data_Time'].split()
                 d = date.split()
+
+               # dt = datetime.datetime.combine(d, t)
+                
                 if dateTime == d:
                     return False
                 else:
                     time = dateTime[1].split('-')
-                    st = time[0]
-                    et = time[1]
-                    #hr = et-st
+                    st = time[0].split(':')
+                    et = time[1].split(':')
+                    t_s = datetime.time(int(st[0]),int(st[1]), 00)
+                    t_e = datetime.time(int(et[0]),int(et[1]), 00)
+                    hr = t_s-t_e
+                    print(hr)
 
                     inputtime = d[1].split('-')
                     sit = inputtime[0]
                     eit = inputtime[1]
-                    #ihr = eit -sit
-                    
-                    if sit < st and eit > et :#and ihr < hr:
+                    it = datetime.time(sit, eit, 00)
+
+                    if it != t  :#and ihr < hr:
                         #insert(Json) 
                         print('in')
                         print(json.dumps(Json,sort_keys=True,indent=2))
