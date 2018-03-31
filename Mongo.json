@@ -1,0 +1,9 @@
+{"_id":{"$oid":"5abf288ae991762ba0863dd8"},"room":"meeting room","data":"meeting room","schedule":" "}
+{"_id":{"$oid":"5abf28abe991762ba0863dd9"},"room":"6272","data":"lab room","schedule":" "}
+{"_id":{"$oid":"5abf28b6e991762ba0863dda"},"room":"6273","data":"lab room","schedule":" "}
+{"_id":{"$oid":"5abf28d1e991762ba0863ddb"},"room":"309/1","data":"lab room","schedule":" "}
+{"_id":{"$oid":"5abf28dae991762ba0863ddc"},"room":"309/2","data":"lab room","schedule":" "}
+{"_id":{"$oid":"5abf28e9e991762ba0863ddd"},"room":"310","data":"lab room","schedule":" "}
+{"_id":{"$oid":"5abf28f8e991762ba0863dde"},"room":"6274","data":"lecture room","schedule":" "}
+{"_id":{"$oid":"5abf2900e991762ba0863ddf"},"room":"6275","data":"lecture room","schedule":" "}
+{"_id":{"$oid":"5abf290ce991762ba0863de0"},"room":"6276","data":"lecture room","schedule":" "}
