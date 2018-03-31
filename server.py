@@ -91,8 +91,8 @@ printdata("test\n")
 
 # ///////////////////////////////////////////////////////
 # login
-
-
+def Login(input):
+	return DB.login(input["Username"],input["Password"])
 # ///////////////////////////////////////////////////////
 # cancel
 
@@ -123,7 +123,7 @@ app = Flask(__name__)
 def api_login():
 	if request.method =='POST':
 		if request.headers['Content-Type'] == 'application/json':
-			return "JSON Message: " + json.dumps(request.json)
+			return Login(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
 	else: return "fail_POST_LOGIN"
