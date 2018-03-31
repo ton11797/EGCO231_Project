@@ -8,8 +8,14 @@ from flask import Flask, url_for,Response,request,json
 
 # ////////////////////////////////////////////////////////
 # load config
-
-
+def load_config():
+	file_config = open("config.conf","r")
+	read_config = {}
+	print(file_config)
+	for line in file_config:
+		buf = line.strip().split("=")
+		read_config[buf[0]] = buf[1]
+	return read_config
 # ///////////////////////////////////////////////////////
 # log
 def printdata(data):
@@ -21,7 +27,12 @@ def printdata(data):
 # database
 class database:
 	def __init__(self):
-		self.client = MongoClient('localhost', 27017)
+		config = load_config()
+		login = config['dbuser']+config['dbpass']
+		if not(login==""):
+			login=login+'@'
+		# self.client = MongoClient('localhost', 27017)
+		self.client = MongoClient('mongodb://'+ login + config['server_address']+':'+config['port'])
 		self.db = self.client['EGCO']
 	def have_user(self,username):
 		self.user = self.db['userData']
@@ -78,7 +89,7 @@ class database:
 DB = database()
 # print(DB.have_user("admin"))
 # print(DB.get_room())
-print(DB.login("admin","123"))
+print(DB.login("admin","1234"))
 printdata("test\n")
 printdata("test\n")
 printdata("test\n")
@@ -112,7 +123,8 @@ def Register(data):
 
 # ///////////////////////////////////////////////////////
 # get room
-
+def Get_room():
+	return DB.get_room()
 
 # ///////////////////////////////////////////////////////
 # Route
@@ -156,7 +168,7 @@ def api_cancel():
 	else: return "fail_POST_CANCEL"
 @app.route('/list', methods = ['GET'])
 def api_list():
-	if request.method =='GET': return DB.get_room()
+	if request.method =='GET': return Get_room()
 	else: return "fail_POST_CANCEL"
 if __name__ == '__main__':
 	app.run()
