@@ -1,5 +1,6 @@
 import json
 
+input = json.load(open('egco231_putlogin.json'))
 def Register(input):
     data = json.loads(input)
     if(have_user(data["Username"]):
