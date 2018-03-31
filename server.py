@@ -156,7 +156,7 @@ def api_cancel():
 	else: return "fail_POST_CANCEL"
 @app.route('/list', methods = ['GET'])
 def api_list():
-	if request.method =='GET': return "list of Room"
+	if request.method =='GET': return DB.get_room()
 	else: return "fail_POST_CANCEL"
 if __name__ == '__main__':
 	app.run()
