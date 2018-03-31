@@ -56,6 +56,9 @@ def checkBook(JSONINPUT):
     'Room':'6272',
     'Date_Time':"25/4/2561 12:00-15:00"
     }
+    
+    respond = {"status":"sucess","error":"none"}
+    respond_err = {"status":"fail","error":"Have reservations !!"}
 
     input = inJson
     user = input['Username']
@@ -87,13 +90,14 @@ def checkBook(JSONINPUT):
                         #insert(Json) 
                         print('in')
                         # print(json.dumps(Json,sort_keys=True,indent=2))
-                        return True
-                return False
+                        
+                        return json.dumps(respond)
+                return json.dumps(respond_err)
         #insert(Json) 
         # print(json.dumps(Json,sort_keys=True,indent=2))
-        return True
+        return json.dumps(respond)
 
-checkBook()
+checkBook('JSONINPUT')
 # ///////////////////////////////////////////////////////
 # login
 
