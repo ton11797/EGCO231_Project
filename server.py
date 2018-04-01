@@ -12,29 +12,40 @@ from flask import Flask, url_for,Response,request,json
 def Jprint(JSON):
 	print(json.dumps(JSON,sort_keys=True,indent=2))
 
-
+from time import gmtime, strftime
 # ////////////////////////////////////////////////////////
 # load config
-
-
+def load_config():
+	file_config = open("config.conf","r")
+	read_config = {}
+	print(file_config)
+	for line in file_config:
+		buf = line.strip().split("=")
+		read_config[buf[0]] = buf[1]
+	return read_config
 # ///////////////////////////////////////////////////////
 # log
 def printdata(data):
     file = open("log.txt","a")
-    print(data,end="")
-    file.write(data)
+    print(data)
+    file.write(data+"\n")
     file.close
 # ///////////////////////////////////////////////////////
 # database
 class database:
 	def __init__(self):
-		self.URI = "mongodb+srv://root:root@egco231-ettdb.mongodb.net" 
-		self.client = MongoClient(self.URI)
-		self.db = self.client['EGCO231']
-		self.user = self.db['userData']
+		config = load_config()
+		login = config['dbuser']+config['dbpass']
+		if not(login==""):
+			login=login+'@'
+		else:
+			printdata("[Warning]: database no auth")
+		printdata("[info]:connection database "+'mongodb://'+ login + config['server_address']+':'+config['port'])
+		self.client = MongoClient('mongodb://'+ login + config['server_address']+':'+config['port'])
+		self.db = self.client['EGCO']
 		self.room = self.db['Room']
-		self.session = self.db['loginSession ']
-
+		self.session = self.db['loginSession']
+		self.user = self.db['userData']
 	def have_user(self,username):
 		
 		if str(self.user.find_one({"username":username})) == "None":
@@ -47,14 +58,9 @@ class database:
 			respond = {"status":"Fail","error":"username exist"}
 			return json.dumps(respond)
 		else:
-			self.user.insert_one({"Username":username,"Password":password})
-			respond = {"status":"sucess","error":"username exist"}
+			self.user.insert_one({"username":username,"password":password})
+			respond = {"status":"sucess","error":"none"}
 			return json.dumps(respond)
-
-	def rand_string(self,length, char_set=10):
-		output = ''
-		for _ in range(length): output += random.choice(char_set)
-		return output
 
 	def get_room(self):
 		collect = self.room.find({})
@@ -63,10 +69,12 @@ class database:
 			del c['_id']
 			array.append(c)
 		respond = {"available-room":array}
-		return respond
+		return json.dumps(respond)
 
 	def genCookies(self,username):
 		self.random = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
+		self.random = self.random + strftime("%m%d%H%M%S",gmtime())
+		printdata("[login]: "+ username + " login at "  + strftime("%Y/%m/%d %H:%M:%S",gmtime()))
 		self.session.insert_one({"username":username,"cookies":self.random})
 		return self.random
 
@@ -85,27 +93,40 @@ class database:
 	def insert(self,json):
 		self.room.insert_one(json)
 
+	def whois(self,cookies):
+		return self.session.find_one({"cookies":cookies})['username']
+	
+	def insert_schedule(self,room,json):
+		roomdata = self.room.find_one({'room':room})
+		schedule = roomdata['schedule']
+		schedule.append(json)
+		self.room.update_one({'room':room},{'$set':{'schedule':schedule}})
+		return True
+	def remove_schedule(self,room,username,data_time):
+		roomdata = self.room.find_one({'room':room})
+		schedule = roomdata['schedule']
+		for i in range(len(schedule)):
+			if schedule[i]['Username'] == username and schedule[i]['Data_Time'] == data_time:
+				del schedule[i]
+				break
+		self.room.update_one({'room':room},{'$set':{'schedule':schedule}})
+		
 
-JSONINPUT = json.load(open('EGCO231_getroom.json'))
 DB = database()
-#DB.insert(JSONINPUT)
-# print(DB.have_user("admin"))
-#print(DB.login("admin","123"))
-#printdata("test\n")
-
+DB.remove_schedule("meeting room",'toasdfn','25/4/2561 12:00-16:00')
 # ///////////////////////////////////////////////////////
 # book
-def findkeys(node, kv):
-    if isinstance(node, list):
-        for i in node:
-            for x in findkeys(i, kv):
-               yield x
-    elif isinstance(node, dict):
-        if kv in node:
-            yield node[kv]
-        for j in node.values():
-            for x in findkeys(j, kv):
-                yield x
+# def findkeys(node, kv):
+#     if isinstance(node, list):
+#         for i in node:
+#             for x in findkeys(i, kv):
+#                yield x
+#     elif isinstance(node, dict):
+#         if kv in node:
+#             yield node[kv]
+#         for j in node.values():
+#             for x in findkeys(j, kv):
+#                 yield x
 
 def checkBook(data):# can Book or not
 	room = data['Room']
@@ -150,66 +171,77 @@ JSONINPUT = json.load(open('egco231_putroom.json'))
 #print(list(findkeys(JSONINPUT , "Room")))
 Jprint(Book(JSONINPUT))
 
-# ///////////////////////////////////////////////////////
-# login
+# # ///////////////////////////////////////////////////////
+# # login
+# def Login(input):
+# 	return DB.login(input["Username"],input["Password"])
+# # ///////////////////////////////////////////////////////
+# # cancel
 
 
-# ///////////////////////////////////////////////////////
-# cancel
+# # ///////////////////////////////////////////////////////
+# # register
+# def Register(data):
+# 	if (DB.have_user(data["Username"])):
+# 		respond = {"status":"fail","error":"This username is already in use"}
+# 		return json.dumps(respond)
+# 	else:
+# 		if(len(data["Password"])<17 and len(data["Password"])>7):
+# 			return DB.register(str(data["Password"]),str(data["Password"]))
+# 		else:
+# 			respond = {"status":"fail","error":"your password must contain between 8 and 15 letters and numbers"}
+# 			return json.dumps(respond)
 
+# # ///////////////////////////////////////////////////////
+# # get room
+# def Get_room():
+# 	return DB.get_room()
 
-# ///////////////////////////////////////////////////////
-# register
+# # ///////////////////////////////////////////////////////
+# # Route
 
+# app = Flask(__name__)
 
-# ///////////////////////////////////////////////////////
-# get room
+# @app.route('/login', methods = ['POST'])
+# def api_login():
+# 	if request.method =='POST':
+# 		if request.headers['Content-Type'] == 'application/json':
+# 			return Login(request.json)
+# 		else:
+# 			return "415 Unsupported Media Type ;)"
+# 	else: return "fail_POST_LOGIN"
 
+# @app.route('/regis', methods = ['POST'])
+# def api_regis():
+# 	if request.method =='POST':
+# 		if request.headers['Content-Type'] == 'application/json':
+# 			return Register(request.json)
+# 		else:
+# 			return "415 Unsupported Media Type ;)"
+# 	else: return "fail_POST_REGIS"
 
-# ///////////////////////////////////////////////////////
-# Route
+# @app.route('/book', methods = ['POST'])
+# def api_book():
+# 	if request.method =='POST':
+# 		if (request.headers['Content-Type'] == 'application/json'):
+# 				return "JSON Message: " + json.dumps(request.json)
+# 		else:
+# 			return "415 Unsupported Media Type ;)"
+# 	else: return "fail_POST_BOOK"
 
-app = Flask(__name__)
+# @app.route('/cancel', methods = ['POST'])
+# def api_cancel():
+# 	if request.method =='POST':
+# 		if (request.headers['Content-Type'] == 'application/json'):
+# 				return "JSON Message: " + json.dumps(request.json)
+# 		else:
+# 			return "415 Unsupported Media Type ;)"
+# 	else: return "fail_POST_CANCEL"
+# @app.route('/list', methods = ['GET'])
+# def api_list():
+# 	if request.method =='GET': return Get_room()
+# 	else: return "fail_POST_CANCEL"
+# if __name__ == '__main__':
+# 	app.run()
 
-@app.route('/login', methods = ['POST'])
-def api_login():
-	if request.method =='POST':
-		if request.headers['Content-Type'] == 'application/json' : return "JSON Message: " + json.dumps(request.json)
-		else:
-			return "415 Unsupported Media Type ;)"
-	else: return "fail_POST_LOGIN"
-
-@app.route('/regis', methods = ['POST'])
-def api_regis():
-	if request.method =='POST':
-		if (request.headers['Content-Type'] == 'application/json'):
-			return "JSON Message: " + json.dumps(request.json)
-		else:
-			return "415 Unsupported Media Type ;)"
-	else: return "fail_POST_REGIS"
-
-@app.route('/book', methods = ['POST'])
-def api_book():
-	if request.method =='POST':
-		if (request.headers['Content-Type'] == 'application/json'):
-				return "JSON Message: " + json.dumps(request.json)
-		else:
-			return "415 Unsupported Media Type ;)"
-	else: return "fail_POST_BOOK"
-
-@app.route('/cancel', methods = ['POST'])
-def api_cancel():
-	if request.method =='POST':
-		if (request.headers['Content-Type'] == 'application/json'):
-				return "JSON Message: " + json.dumps(request.json)
-		else:
-			return "415 Unsupported Media Type ;)"
-	else: return "fail_POST_CANCEL"
-@app.route('/list', methods = ['GET'])
-def api_list():
-	if request.method =='GET': return "list of Room"
-	else: return "fail_POST_CANCEL"
-if __name__ == '__main__':
-	app.run()
-
-# ///////////////////////////////////////////////////////
+# # ///////////////////////////////////////////////////////
