@@ -9,7 +9,7 @@ import json
 
 from flask import Flask, url_for,Response,request,json
 
-
+from time import gmtime, strftime
 # ////////////////////////////////////////////////////////
 # load config
 def load_config():
@@ -24,8 +24,8 @@ def load_config():
 # log
 def printdata(data):
     file = open("log.txt","a")
-    print(data,end="")
-    file.write(data)
+    print(data)
+    file.write(data+"\n")
     file.close
 # ///////////////////////////////////////////////////////
 # database
@@ -35,7 +35,9 @@ class database:
 		login = config['dbuser']+config['dbpass']
 		if not(login==""):
 			login=login+'@'
-		# self.client = MongoClient('localhost', 27017)
+		else:
+			printdata("[Warning]: database no auth")
+		printdata("[info]:connection database "+'mongodb://'+ login + config['server_address']+':'+config['port'])
 		self.client = MongoClient('mongodb://'+ login + config['server_address']+':'+config['port'])
 		self.db = self.client['EGCO']
 		self.room = self.db['Room']
@@ -57,11 +59,6 @@ class database:
 			respond = {"status":"sucess","error":"none"}
 			return json.dumps(respond)
 
-	def rand_string(self,length, char_set=10):
-		output = ''
-		for _ in range(length): output += random.choice(char_set)
-		return output
-
 	def get_room(self):
 		collect = self.room.find({})
 		array =[]
@@ -73,6 +70,8 @@ class database:
 
 	def genCookies(self,username):
 		self.random = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
+		self.random = self.random + strftime("%m%d%H%M%S",gmtime())
+		printdata("[login]: "+ username + " login at "  + strftime("%Y/%m/%d %H:%M:%S",gmtime()))
 		self.session.insert_one({"username":username,"cookies":self.random})
 		return self.random
 
@@ -95,7 +94,7 @@ class database:
 		return self.session.find_one({"cookies":cookies})['username']
 
 DB = database()
-print(DB.whois("WcIiXtzWCxVvo3Hwl33C9EPThCLbafpq"))
+
 # ///////////////////////////////////////////////////////
 # book
 def findkeys(node, kv):
