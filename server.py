@@ -34,18 +34,12 @@ def printdata(data):
 # database
 class database:
 	def __init__(self):
-		config = load_config()
-		login = config['dbuser']+config['dbpass']
-		if not(login==""):
-			login=login+'@'
-		else:
-			printdata("[Warning]: database no auth")
-		printdata("[info]:connection database "+'mongodb://'+ login + config['server_address']+':'+config['port'])
-		self.client = MongoClient('mongodb://'+ login + config['server_address']+':'+config['port'])
-		self.db = self.client['EGCO']
-		self.room = self.db['Room']
-		self.session = self.db['loginSession']
+		self.URI = "mongodb+srv://root:root@egco231-ettdb.mongodb.net" 
+		self.client = MongoClient(self.URI)
+		self.db = self.client['EGCO231']
 		self.user = self.db['userData']
+		self.room = self.db['Room']
+		self.session = self.db['loginSession ']
 	def have_user(self,username):
 		
 		if str(self.user.find_one({"username":username})) == "None":
@@ -69,7 +63,7 @@ class database:
 			del c['_id']
 			array.append(c)
 		respond = {"available-room":array}
-		return json.dumps(respond)
+		return respond
 
 	def genCookies(self,username):
 		self.random = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
@@ -97,13 +91,13 @@ class database:
 		return self.session.find_one({"cookies":cookies})['username']
 	
 	def insert_schedule(self,room,json):
-		roomdata = self.room.find_one({'room':room})
+		roomdata = self.room.find_one({'Room':room})
 		schedule = roomdata['schedule']
 		schedule.append(json)
 		self.room.update_one({'room':room},{'$set':{'schedule':schedule}})
 		return True
 	def remove_schedule(self,room,username,data_time):
-		roomdata = self.room.find_one({'room':room})
+		roomdata = self.room.find_one({'Room':room})
 		schedule = roomdata['schedule']
 		for i in range(len(schedule)):
 			if schedule[i]['Username'] == username and schedule[i]['Data_Time'] == data_time:
@@ -113,28 +107,46 @@ class database:
 		
 
 DB = database()
-DB.remove_schedule("meeting room",'toasdfn','25/4/2561 12:00-16:00')
+JSONINPUT = json.load(open('EGCO231_getroom.json'))
+# DB.insert(    {
+#       "Room": "6272",
+#       "schedule": [
+#         {
+#           "Username": "narit",
+#           "Data_Time": "25/4/2561 12:00-16:00"
+#         },
+#         {
+#           "Username": "narit",
+#           "Data Time": "28/4/2561 12:00-16:00"
+#         }
+#       ]
+#     },
+# 	)
+#DB.insert_schedule("meeting room",{'Username':'toasdfn','Data_Time':'25/4/2561 12:00-16:00'})
+#DB.remove_schedule("meeting room",'toasdfn','25/4/2561 12:00-16:00')
+
 # ///////////////////////////////////////////////////////
 # book
-# def findkeys(node, kv):
-#     if isinstance(node, list):
-#         for i in node:
-#             for x in findkeys(i, kv):
-#                yield x
-#     elif isinstance(node, dict):
-#         if kv in node:
-#             yield node[kv]
-#         for j in node.values():
-#             for x in findkeys(j, kv):
-#                 yield x
+def findkeys(node, kv):
+    if isinstance(node, list):
+        for i in node:
+            for x in findkeys(i, kv):
+               yield x
+    elif isinstance(node, dict):
+        if kv in node:
+            yield node[kv]
+        for j in node.values():
+            for x in findkeys(j, kv):
+                yield x
 
 def checkBook(data):# can Book or not
 	room = data['Room']
 	date = data['Data_Time']
+
 	room_db = list(findkeys(DB.get_room(), "Room"))
 	date_db = list(findkeys(DB.get_room(), "Data_Time"))
-	print(room,date)
-	print(room_db,date_db)
+	# print(room,date)
+	# print(room_db,date_db)
 
 	if room in room_db :
 		if date in date_db :
@@ -152,15 +164,17 @@ def checkBook(data):# can Book or not
 
 def Book(JSONINPUT):
 	data = JSONINPUT['Data']
-	cs = JSONINPUT['cookie_session']
+	username = DB.whois(JSONINPUT['cookie_session'])	
 	respond = {"status":"sucess","error":"none"}
 	respond_err = {"status":"fail","error":"Have reservations !!"}
 	set_return = []
 	Res = {}
-
 	for d in data:
+		json = {'Username': username,
+				'Data_Time':d['Data_Time']}
+		#Jprint(json)
 		if checkBook(d) :
-			DB.insert(d) 
+			DB.insert_schedule(d['Room'],json)
 			set_return.append(respond)
 		else:
 			set_return.append(respond_err)
