@@ -8,11 +8,11 @@ import pprint
 import json
 
 from flask import Flask, url_for,Response,request,json
+from time import gmtime, strftime
 #print(json.dumps(json_data,sort_keys=True,indent=2)) 
 def Jprint(JSON):
 	print(json.dumps(JSON,sort_keys=True,indent=2))
 
-from time import gmtime, strftime
 # ////////////////////////////////////////////////////////
 # load config
 def load_config():
@@ -96,6 +96,7 @@ class database:
 		schedule.append(json)
 		self.room.update_one({'room':room},{'$set':{'schedule':schedule}})
 		return True
+
 	def remove_schedule(self,room,username,data_time):
 		roomdata = self.room.find_one({'Room':room})
 		schedule = roomdata['schedule']
@@ -107,24 +108,7 @@ class database:
 		
 
 DB = database()
-JSONINPUT = json.load(open('EGCO231_getroom.json'))
-# DB.insert(    {
-#       "Room": "6272",
-#       "schedule": [
-#         {
-#           "Username": "narit",
-#           "Data_Time": "25/4/2561 12:00-16:00"
-#         },
-#         {
-#           "Username": "narit",
-#           "Data Time": "28/4/2561 12:00-16:00"
-#         }
-#       ]
-#     },
-# 	)
-#DB.insert_schedule("meeting room",{'Username':'toasdfn','Data_Time':'25/4/2561 12:00-16:00'})
-#DB.remove_schedule("meeting room",'toasdfn','25/4/2561 12:00-16:00')
-
+DB.remove_schedule("meeting room",'toasdfn','25/4/2561 12:00-16:00')
 # ///////////////////////////////////////////////////////
 # book
 def findkeys(node, kv):
@@ -189,12 +173,12 @@ Jprint(Book(JSONINPUT))
 # # login
 # def Login(input):
 # 	return DB.login(input["Username"],input["Password"])
-# # ///////////////////////////////////////////////////////
-# # cancel
+# # # ///////////////////////////////////////////////////////
+# # # cancel
 
 
-# # ///////////////////////////////////////////////////////
-# # register
+# # # ///////////////////////////////////////////////////////
+# # # register
 # def Register(data):
 # 	if (DB.have_user(data["Username"])):
 # 		respond = {"status":"fail","error":"This username is already in use"}
@@ -205,14 +189,13 @@ Jprint(Book(JSONINPUT))
 # 		else:
 # 			respond = {"status":"fail","error":"your password must contain between 8 and 15 letters and numbers"}
 # 			return json.dumps(respond)
-
-# # ///////////////////////////////////////////////////////
-# # get room
+# # # ///////////////////////////////////////////////////////
+# # # get room
 # def Get_room():
 # 	return DB.get_room()
 
-# # ///////////////////////////////////////////////////////
-# # Route
+# # # ///////////////////////////////////////////////////////
+# # # Route
 
 # app = Flask(__name__)
 
@@ -238,7 +221,7 @@ Jprint(Book(JSONINPUT))
 # def api_book():
 # 	if request.method =='POST':
 # 		if (request.headers['Content-Type'] == 'application/json'):
-# 				return "JSON Message: " + json.dumps(request.json)
+# 				return Book(request.json)
 # 		else:
 # 			return "415 Unsupported Media Type ;)"
 # 	else: return "fail_POST_BOOK"

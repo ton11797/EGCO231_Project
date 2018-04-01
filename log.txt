@@ -252,6 +252,9 @@ test
 [info]:connection database mongodb://localhost:27017
 [Warning]: database no auth
 [info]:connection database mongodb://localhost:27017
+<<<<<<< HEAD
+=======
+[login]: test login at 2018/04/01 10:53:39
 [Warning]: database no auth
 [info]:connection database mongodb://localhost:27017
 [Warning]: database no auth
@@ -260,9 +263,162 @@ test
 [info]:connection database mongodb://localhost:27017
 [Warning]: database no auth
 [info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[login]: Oat login at 2018/04/01 12:02:57
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[login]: Oat login at 2018/04/01 12:08:26
+[login]: Oat login at 2018/04/01 12:09:32
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+>>>>>>> Dev
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+<<<<<<< HEAD
 [info]:connection database mongodb+srv://root:root@egco231-ettdb.mongodb.net:27017
 [info]:connection database mongodb://root:root@egco231-ettdb.mongodb.net:27017
 [info]:connection database mongodb://root:root@egco231-ettdb.mongodb.net:27017
 [info]:connection database mongodb://root:root@egco231-ettdb.mongodb.net:27017
 [info]:connection database mongodb://root:root@egco231-ettdb.mongodb.net:27017
 [info]:connection database mongodb://root:root@egco231-ettdb.mongodb.net:27017
+=======
+>>>>>>> Dev
