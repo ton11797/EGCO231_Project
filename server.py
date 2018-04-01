@@ -8,6 +8,9 @@ import pprint
 import json
 
 from flask import Flask, url_for,Response,request,json
+#print(json.dumps(json_data,sort_keys=True,indent=2)) 
+def Jprint(JSON):
+	print(json.dumps(JSON,sort_keys=True,indent=2))
 
 
 # ////////////////////////////////////////////////////////
@@ -104,41 +107,48 @@ def findkeys(node, kv):
             for x in findkeys(j, kv):
                 yield x
 
-def checkBook(input):# can Book or not
-	for data in input:
-		room = data['Room']
-		date = data['Data_Time']
-		room_db = list(findkeys(DB.get_room(), "Room"))
-		date_db = list(findkeys(DB.get_room(), "Data_Time"))
+def checkBook(data):# can Book or not
+	room = data['Room']
+	date = data['Data_Time']
+	room_db = list(findkeys(DB.get_room(), "Room"))
+	date_db = list(findkeys(DB.get_room(), "Data_Time"))
+	print(room,date)
+	print(room_db,date_db)
 
-		if room in room_db :
-			if date in date_db :
-				return False
-			else:
-				for d in date_db:
-					date_time1 = d.split()
-					date_time2 = date.split()
-					if date_time2[0] in date_time1[0]: #date check
-						db_s,db_e = [datetime.strptime(t, '%H:%M') for t in date_time1[1].split('-')]
-						s,e = [datetime.strptime(t, '%H:%M') for t in date_time2[1].split('-')]
-						if ( (s < db_s and e <= db_s) or (s >= db_e and e > db_e) ) :
-							return True
-		return True
+	if room in room_db :
+		if date in date_db :
+			return False
+		else:
+			for d in date_db:
+				date_time1 = d.split()
+				date_time2 = date.split()
+				if date_time2[0] in date_time1[0]: #date check
+					db_s,db_e = [datetime.strptime(t, '%H:%M') for t in date_time1[1].split('-')]
+					s,e = [datetime.strptime(t, '%H:%M') for t in date_time2[1].split('-')]
+					if ( (s < db_s and e <= db_s) or (s >= db_e and e > db_e) ) :
+						return True
+	return True
 
 def Book(JSONINPUT):
 	data = JSONINPUT['Data']
 	cs = JSONINPUT['cookie_session']
 	respond = {"status":"sucess","error":"none"}
 	respond_err = {"status":"fail","error":"Have reservations !!"}
+	set_return = []
+	Res = {}
 
-	if checkBook(data) :
-		DB.insert(JSONINPUT) 
-		return json.dumps(respond)
-	return json.dumps(respond_err)
+	for d in data:
+		if checkBook(d) :
+			DB.insert(d) 
+			set_return.append(respond)
+		else:
+			set_return.append(respond_err)
+	Res['respond'] = set_return
+	return Res
 
 JSONINPUT = json.load(open('egco231_putroom.json'))
 #print(list(findkeys(JSONINPUT , "Room")))
-print(Book(JSONINPUT))
+Jprint(Book(JSONINPUT))
 
 # ///////////////////////////////////////////////////////
 # login
