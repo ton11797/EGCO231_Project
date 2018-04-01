@@ -16,13 +16,13 @@ def Jprint(JSON):
 # ////////////////////////////////////////////////////////
 # load config
 def load_config():
-	file_config = open("config.conf","r")
-	read_config = {}
-	print(file_config)
-	for line in file_config:
-		buf = line.strip().split("=")
-		read_config[buf[0]] = buf[1]
-	return read_config
+  file_config = open("config.conf","r")
+  read_config = {}
+  print(file_config)
+  for line in file_config:
+    buf = line.strip().split("=")
+    read_config[buf[0]] = buf[1]
+  return read_config
 # ///////////////////////////////////////////////////////
 # log
 def printdata(data):
@@ -38,16 +38,11 @@ class database:
     login = config['dbuser']+config['dbpass']
     if not(login==""):
       login=login+'@'
-    else:
-      printdata("[Warning]: database no auth")
-    printdata("[info]:connection database "+'mongodb://'+ login + config['server_address']+':'+config['port'])
+    # self.client = MongoClient('localhost', 27017)
     self.client = MongoClient('mongodb://'+ login + config['server_address']+':'+config['port'])
     self.db = self.client['EGCO']
-    self.room = self.db['Room']
-    self.session = self.db['loginSession']
+  def have_user(self,username):
     self.user = self.db['userData']
-def have_user(self,username):
-    
     if str(self.user.find_one({"username":username})) == "None":
       return False
     else:
