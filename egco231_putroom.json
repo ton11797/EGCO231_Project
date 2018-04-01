@@ -1,11 +1,7 @@
 {
   "Data":[
     { 
-<<<<<<< HEAD
-      "Room":"6272",
-=======
       "Room":"6274",
->>>>>>> Dev
       "Data_Time":"5/5/61 18:00-20:00"
     },
     { 
@@ -13,10 +9,6 @@
       "Data_Time":"6/5/61 14:00-16:00"
     }
   ],
-<<<<<<< HEAD
-  "cookie_session":"fBWsYtlOtxHlIBEZwzhLOhzRbPI2ezZ5"
-=======
-  "cookie_session":"VNfW8Si2U3xWubzpL4p02g7BF7sQCx270401120932"
->>>>>>> Dev
+  "cookie_session":"R87nsd2OYD9UJnobIvPht6hxrt926oF90401171904"
 }
 

@@ -422,3 +422,4 @@ test
 [info]:connection database mongodb://root:root@egco231-ettdb.mongodb.net:27017
 =======
 >>>>>>> Dev
+[login]: AAAAA login at 2018/04/01 17:19:04
