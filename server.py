@@ -2,47 +2,44 @@
 from pymongo import MongoClient
 import random
 import string
- 
 from datetime import datetime, time as datetime_time, timedelta
 import pprint
 import json
- 
 from flask import Flask, url_for,Response,request,json
-#print(json.dumps(json_data,sort_keys=True,indent=2)) 
-def Jprint(JSON):
-  print(json.dumps(JSON,sort_keys=True,indent=2))
- 
 from time import gmtime, strftime
+
 # ////////////////////////////////////////////////////////
 # load config
-def load_config():
-	file_config = open("config.conf","r")
-	read_config = {}
-#   print(file_config)
-	for line in file_config:
-		#print(line)
-		buf = line.strip().split("=")
-		read_config[buf[0]] = buf[1]
-	return read_config
+class config:
+	def __init__(self):
+		file_config = open("config.conf","r")
+		self.read_config = {}
+		for line in file_config:
+			buf = line.strip().split("=")
+			self.read_config[buf[0]] = buf[1]
+	def get_config(self):
+		return self.read_config
+		
+CONFIG = config()
 # ///////////////////////////////////////////////////////
 # log
 def printdata(data):
     file = open("log.txt","a")
-    #print(data)
+    print(data)
     file.write(data+"\n")
     file.close
 # ///////////////////////////////////////////////////////
 # database
 class database:
 	def __init__(self):
-		config = load_config()
+		config = CONFIG.get_config()
 		login = config['dbuser']+config['dbpass']
 		if not(login==""):
 			login=login+'@'
 		else:
 			printdata("[Warning]: database no auth")
-		printdata("[info]:connection database "+'mongodb://'+ login + config['server_address']+':'+config['port'])
-		self.client = MongoClient('mongodb://'+ login + config['server_address']+':'+config['port'])
+		printdata("[info]:connection database "+'mongodb://'+ login + config['db_address']+':'+config['db_port'])
+		self.client = MongoClient('mongodb://'+ login + config['db_address']+':'+config['db_port'])
 		self.db = self.client['EGCO']
 		self.room = self.db['Room']
 		self.session = self.db['loginSession']
@@ -173,10 +170,6 @@ def Book(JSONINPUT):
 	Res['respond'] = set_return
 	return json.dumps(Res)
 
-#json_data = json.load(open('egco231_putroom.json')) 
-#print(json.dumps(json_data,sort_keys=True,indent=2)) 
-#print(Book(json_data))
-
 # ///////////////////////////////////////////////////////
 # login
 def Login(input):
@@ -246,7 +239,9 @@ def api_cancel():
 def api_list():
 	if request.method =='GET': return Get_room()
 	else: return "fail_POST_CANCEL"
+
+runat = CONFIG.get_config()
 if __name__ == '__main__':
-	app.run()
+	app.run(host=runat['server_address'],port=int(runat['server_port']))
 
 # # ///////////////////////////////////////////////////////

@@ -525,3 +525,13 @@ test
 [info]:connection database mongodb://localhost:27017
 [Warning]: database no auth
 [info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
