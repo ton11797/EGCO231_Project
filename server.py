@@ -19,7 +19,7 @@ class config:
 			self.read_config[buf[0]] = buf[1]
 	def get_config(self):
 		return self.read_config
-		
+
 CONFIG = config()
 # ///////////////////////////////////////////////////////
 # log
@@ -110,7 +110,7 @@ class database:
 
  
 DB = database()
-#DB.remove_schedule("meeting room",'toasdfn','25/4/2561 12:00-16:00')
+
 # ///////////////////////////////////////////////////////
 # book
 def findkeys(node, kv):
@@ -193,7 +193,7 @@ def Register(data):
 # # ///////////////////////////////////////////////////////
 # # get room
 def Get_room():
-	return DB.get_room()
+	return json.dumps(DB.get_room())
 
 # # ///////////////////////////////////////////////////////
 # # Route
