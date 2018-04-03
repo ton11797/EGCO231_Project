@@ -57,11 +57,11 @@ class database:
 	def register(self,username,password):
 		if self.have_user(username):
 			respond = {"status":"Fail","error":"username exist"}
-			return json.dumps(respond)
+			return json.dumps(respond,sort_keys=True,indent=2)
 		else:
 			self.user.insert_one({"username":username,"password":password})
 			respond = {"status":"sucess","error":"none"}
-			return json.dumps(respond)
+			return json.dumps(respond,sort_keys=True,indent=2)
  
 	def get_room(self):
 		collect = self.room.find({})
@@ -70,7 +70,7 @@ class database:
 			del c['_id']
 			array.append(c)
 		respond = {"available-room":array}
-		return json.dumps(respond)
+		return json.dumps(respond,sort_keys=True,indent=2)
 
 	def genCookies(self,username):
 		self.random = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
@@ -82,79 +82,108 @@ class database:
 	def login(self,username,password):
 		if self.user.find_one({"username":username,"password":password})=="None":
 			respond = {"status":"Fail","error":"username or password not match"}
-			return json.dumps(respond)
+			return json.dumps(respond,sort_keys=True,indent=2)
 		else:
 			self.cookies = self.genCookies(username)
 			self.admin = "no"
 		if username=="admin":
 			self.admin = "yes"
 		respond = {"status":"sucess","error":"none","cookie_session":self.cookies,"admin":self.admin}
-		return json.dumps(respond)
- 
-	def insert(self,json):
-		self.room.insert_one(json)
+		return json.dumps(respond,sort_keys=True,indent=2)
  
 	def whois(self,cookies):
 		return self.session.find_one({"cookies":cookies})['username']
 	
-	def find_room(self,room):
-		return self.room.find_one({'room':room})
+	def get_schedule(self,room):
+		return self.room.find_one({'room':room})['schedule']
 
 	def insert_schedule(self,room,json):
-		roomdata = self.find_room(room)
-		schedule = roomdata['schedule']
+		schedule = self.get_schedule(room)
 		schedule.append(json)
 		self.room.update_one({'room':room},{'$set':{'schedule':schedule}})
 		return True
-	def remove_schedule(self,room,username,data_time):
-		roomdata = self.room.find_one({'room':room})
-		schedule = roomdata['schedule']
+
+	def remove_schedule(self,room,json):
+		schedule = self.get_schedule(room)
 		for i in range(len(schedule)):
-			if schedule[i]['Username'] == username and schedule[i]['Data_Time'] == data_time:
+			if schedule[i] == json:
 				del schedule[i]
 				break
 		self.room.update_one({'room':room},{'$set':{'schedule':schedule}})
+		return True
 
  
 DB = database()
 
 # ///////////////////////////////////////////////////////
 # book
-def checkBook(room,jsond):# can Book or not
-	date = jsond['Data_Time']
-	thisroom = DB.find_room(room)
-	schedule = thisroom['schedule']
-	if not schedule:
-		return True
-	if jsond in schedule :
-		return False
-	date_time2 = date.split()
-	for i in range(len(schedule)) :
-		date_time1 = schedule[i]['Data_Time'].split()
-		if date_time2[0] == date_time1[0]: #date check
-			db_s,db_e = [datetime.strptime(t, '%H:%M') for t in date_time1[1].split('-')]
-			s,e = [datetime.strptime(t, '%H:%M') for t in date_time2[1].split('-')]
-			if not ( (s < db_s and e <= db_s) or (s >= db_e and e > db_e) ) :
-				return False
-	return True
+class Book:
+	def __init__(self):
+		self.respond 	= {"status":"sucess","error":"none"}
+		self.respond_err = {"status":"fail","error":"Have reservations !!"}
+		self.respond_cerr = {"status":"fail","error":"Not Have Book on this requests !!"}
+		self.Res = {}
+	
+	def JsonForm(self,cookie,date,time):
+		jsond = {
+			'username': DB.whois(cookie),
+			'date': date,'time': time
+		}
+		return jsond
 
-def Book(JSONINPUT):
-	data = JSONINPUT['Data']
-	DB.whois(JSONINPUT['cookie_session'])
-	username = DB.whois(JSONINPUT['cookie_session'])
-	respond = {"status":"sucess","error":"none"}
-	respond_err = {"status":"fail","error":"Have reservations !!"}
-	set_return = []
-	Res = {}
-	for d in data:
-		jsond = {'Username': username,'Data_Time':d['Data_Time']}
-		if checkBook(d['Room'],jsond) :
-			DB.insert_schedule(d['Room'],jsond)
-			set_return.append(respond)
-		else:
-			set_return.append(respond_err)
-	Res['respond'] = set_return
-	return json.dumps(Res)
+	
+	def checkBook(self,room,data):# can Book or not
+		schedule = DB.get_schedule(room)
+		if not schedule:
+			return True
+		if  data in schedule :
+			return False
+		for i in range(len(schedule)) :
+			if data['date'] == schedule[i]['date'] :
+				if data['time'] == schedule[i]['time']:
+					return False
+				db_s,db_e 	= [datetime.strptime(t,'%H:%M') for t in schedule[i]['time'].split('-')]
+				s,e 		= [datetime.strptime(t,'%H:%M') for t in data['time'].split('-')]
+				if not ( (s < db_s and e <= db_s) or (s >= db_e and e > db_e) ) :
+					return False
+		return True
+
+	def At(self,JSONINPUT):
+		set_return = []
+		for data in JSONINPUT['Data']:
+			Json_Form = self.JsonForm(JSONINPUT['cookie_session'],
+								data['date'],data['time'])
+			if self.checkBook(data['room'],Json_Form ) :
+				DB.insert_schedule(data['room'],Json_Form )
+				set_return.append(self.respond)
+			else:
+				set_return.append(self.respond_err)
+		self.Res['respond'] = set_return
+		return json.dumps(self.Res,sort_keys=True,indent=2)
+
+	def Cancel(self,JSONINPUT):
+		set_return = []
+		username = DB.whois(JSONINPUT['cookie_session'])
+		for data in JSONINPUT['Data']:
+			schedule = DB.get_schedule(data['room'])
+			Json_Form = self.JsonForm(JSONINPUT['cookie_session'],data['date'],data['time'])
+			
+			if username == 'admin':
+				Json_Form = next(d for d in schedule 
+				if d['date']== data['date'] and d['time'] == data['time'])
+			print(Json_Form)	
+			if not schedule:
+				set_return.append(self.respond_cerr)
+			elif  Json_Form in schedule :
+				DB.remove_schedule(data['room'],Json_Form)
+				set_return.append(self.respond)
+			else:
+				set_return.append(self.respond_cerr)
+		
+		self.Res['respond'] = set_return
+		return json.dumps(self.Res,sort_keys=True,indent=2)
+
+BK = Book()
 
 # ///////////////////////////////////////////////////////
 # login
@@ -169,17 +198,17 @@ def Login(input):
 def Register(data):
 	if (DB.have_user(data["Username"])):
 		respond = {"status":"fail","error":"This username is already in use"}
-		return json.dumps(respond)
+		return json.dumps(respond,sort_keys=True,indent=2)
 	else:
 		if(len(data["Password"])<17 and len(data["Password"])>7):
-			return DB.register(str(data["Password"]),str(data["Password"]))
+			return DB.register(str(data["Username"]),str(data["Password"]))
 		else:
 			respond = {"status":"fail","error":"your password must contain between 8 and 15 letters and numbers"}
-			return json.dumps(respond)
+			return json.dumps(respond,sort_keys=True,indent=2)
 # # ///////////////////////////////////////////////////////
 # # get room
 def Get_room():
-	return json.dumps(DB.get_room())
+	return DB.get_room()
 
 # # ///////////////////////////////////////////////////////
 # # Route
@@ -208,7 +237,7 @@ def api_regis():
 def api_book():
 	if request.method =='POST':
 		if (request.headers['Content-Type'] == 'application/json'):
-				return Book(request.json)
+				return BK.At(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
 	else: return "fail_POST_BOOK"
@@ -217,7 +246,7 @@ def api_book():
 def api_cancel():
 	if request.method =='POST':
 		if (request.headers['Content-Type'] == 'application/json'):
-				return "JSON Message: " + json.dumps(request.json)
+				return BK.Cancel(request.json)#"JSON Message: " + json.dumps(request.json)
 		else:
 			return "415 Unsupported Media Type ;)"
 	else: return "fail_POST_CANCEL"
