@@ -1,10 +1,9 @@
 import loading
 l=loading.loading()
+import login
+login.login()
+import home
+home.home()
 
-goto="Login"
 
-while(goto!=None):
-    nextgoto=None
-    if goto=='Login':
-        import Login
-        l = login.login()
+
