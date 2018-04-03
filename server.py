@@ -6,6 +6,10 @@ from datetime import datetime, time as datetime_time, timedelta
 import pprint
 import json
 from flask import Flask, url_for,Response,request,json
+#print(json.dumps(json_data,sort_keys=True,indent=2)) 
+def Jprint(JSON):
+  print(json.dumps(JSON,sort_keys=True,indent=2))
+ 
 from time import gmtime, strftime
 
 # ////////////////////////////////////////////////////////
@@ -66,7 +70,7 @@ class database:
 			del c['_id']
 			array.append(c)
 		respond = {"available-room":array}
-		return respond
+		return json.dumps(respond)
 
 	def genCookies(self,username):
 		self.random = ''.join([random.choice(string.ascii_letters + string.digits) for n in range(32)])
@@ -92,9 +96,12 @@ class database:
  
 	def whois(self,cookies):
 		return self.session.find_one({"cookies":cookies})['username']
+	
+	def find_room(self,room):
+		return self.room.find_one({'room':room})
 
 	def insert_schedule(self,room,json):
-		roomdata = self.room.find_one({'room':room})
+		roomdata = self.find_room(room)
 		schedule = roomdata['schedule']
 		schedule.append(json)
 		self.room.update_one({'room':room},{'$set':{'schedule':schedule}})
@@ -113,43 +120,22 @@ DB = database()
 
 # ///////////////////////////////////////////////////////
 # book
-def findkeys(node, kv):
-	if isinstance(node, list):
-		for i in node:
-			for x in findkeys(i, kv):
-				yield x
-	elif isinstance(node, dict):
-		if kv in node:
-			yield node[kv]
-		for j in node.values():
-			for x in findkeys(j, kv):
-				yield x
-
-def checkBook(username,data):# can Book or not
-	date = data['Data_Time']
-	cell = {'Username':username,'Data_Time':date}
-
-	#room_db = list(findkeys(DB.get_room(), "room"))
-	#date_db = list(findkeys(DB.get_room(), "Data_Time"))
-	thisroom = DB.room.find_one({'room':data['Room']})#checkroom
+def checkBook(room,jsond):# can Book or not
+	date = jsond['Data_Time']
+	thisroom = DB.find_room(room)
 	schedule = thisroom['schedule']
 	if not schedule:
-		schedule.append(cell)
-		DB.room.update_one({'room':data['Room']},{'$set':{'schedule':schedule}})
 		return True
-	if cell in schedule :
+	if jsond in schedule :
 		return False
 	date_time2 = date.split()
 	for i in range(len(schedule)) :
 		date_time1 = schedule[i]['Data_Time'].split()
-		print(date_time1[0],'====',date_time2[0])
 		if date_time2[0] == date_time1[0]: #date check
 			db_s,db_e = [datetime.strptime(t, '%H:%M') for t in date_time1[1].split('-')]
 			s,e = [datetime.strptime(t, '%H:%M') for t in date_time2[1].split('-')]
 			if not ( (s < db_s and e <= db_s) or (s >= db_e and e > db_e) ) :
 				return False
-	schedule.append(cell)
-	DB.room.update_one({'room':data['Room']},{'$set':{'schedule':schedule}})
 	return True
 
 def Book(JSONINPUT):
@@ -162,8 +148,8 @@ def Book(JSONINPUT):
 	Res = {}
 	for d in data:
 		jsond = {'Username': username,'Data_Time':d['Data_Time']}
-		if checkBook(username,d) :
-			#DB.insert_schedule(d['Room'],jsond)
+		if checkBook(d['Room'],jsond) :
+			DB.insert_schedule(d['Room'],jsond)
 			set_return.append(respond)
 		else:
 			set_return.append(respond_err)
