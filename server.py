@@ -131,7 +131,6 @@ class Book:
 		}
 		return jsond
 
-	
 	def checkBook(self,room,data):# can Book or not
 		schedule = DB.get_schedule(room)
 		if not schedule: 
@@ -171,10 +170,9 @@ class Book:
 			if username == 'admin'and (d['date']== data['date'] and d['time'] == data['time']):
 				Json_Form = next(d for d in schedule 
 				if d['date']== data['date'] and d['time'] == data['time'])
-			print(Json_Form)	
 			if not schedule:
 				set_return.append(self.respond_cerr)
-			elif  Json_Form in schedule :
+			elif Json_Form in schedule :
 				DB.remove_schedule(data['room'],Json_Form)
 				set_return.append(self.respond)
 			else:
