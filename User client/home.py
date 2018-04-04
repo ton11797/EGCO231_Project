@@ -1,5 +1,7 @@
 from tkinter import *
 import tkinter
+import requests
+
 def cancelnaja(mainFrame,self) :
     mainFrame1 = Frame(mainFrame,width=500, height=400, bd=1, relief=SUNKEN)
     mainFrame1.place(x=0,y=0)
@@ -18,6 +20,9 @@ def cancelnaja(mainFrame,self) :
     label2.place(x=100,y=70)
     label3 = Label(mainFrame1, text='เวลา',font=labelfont1);
     label3.place(x=100,y=90)
+
+    r=requests.get("http://169.254.194.200:5000/list")
+    print(r.text)
     
 class home(Tk):
     def __init__(self):
@@ -31,8 +36,12 @@ class home(Tk):
         mainFrame.pack(side=LEFT,expand=1, pady=10, padx=5)
         # run
         #Button(mainFrame, text='จองห้อง',relief="flat",padx=39).pack(side=TOP, padx=5)
+        #r=requests.get("http://169.254.194.200:5000/list")
+        #print(r.text)
+    
         self.mainloop()
-
+        
+    
 if __name__ == "__main__":
     home()
 
