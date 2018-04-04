@@ -134,7 +134,7 @@ class Book:
 	
 	def checkBook(self,room,data):# can Book or not
 		schedule = DB.get_schedule(room)
-		if not schedule:
+		if not schedule: 
 			return True
 		if  data in schedule :
 			return False
@@ -168,7 +168,7 @@ class Book:
 			schedule = DB.get_schedule(data['room'])
 			Json_Form = self.JsonForm(JSONINPUT['cookie_session'],data['date'],data['time'])
 			
-			if username == 'admin':
+			if username == 'admin'and (d['date']== data['date'] and d['time'] == data['time']):
 				Json_Form = next(d for d in schedule 
 				if d['date']== data['date'] and d['time'] == data['time'])
 			print(Json_Form)	
