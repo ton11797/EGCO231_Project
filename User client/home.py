@@ -2,7 +2,9 @@ from tkinter import *
 from tkinter import Tk, StringVar, ttk
 import json
 import pickme
+
 class home(Tk):
+    
     def __init__(self):
         Tk.__init__(self)
         menuList = Frame(self, relief=SUNKEN)
