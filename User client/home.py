@@ -9,6 +9,8 @@ class home(Tk):
         menuList.pack( side=LEFT,fill=Y,pady=10, padx=5)
         mainFrame = Frame(self,width=500, height=400, bd=1, relief=SUNKEN)
         mainFrame.pack(side=LEFT,expand=1, pady=10, padx=5)
+
+
         # run
         self.mainloop()
 
