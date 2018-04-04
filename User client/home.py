@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter
-import requests
+#import requests
+from filter import*
 
 def cancelnaja(mainFrame,self) :
     mainFrame1 = Frame(mainFrame,width=500, height=400, bd=1, relief=SUNKEN)
@@ -21,8 +22,11 @@ def cancelnaja(mainFrame,self) :
     label3 = Label(mainFrame1, text='เวลา',font=labelfont1);
     label3.place(x=100,y=90)
 
-    r=requests.get("http://169.254.194.200:5000/list")
-    print(r.text)
+#    r=requests.get("http://169.254.194.200:5000/list")
+ #   print(r.text)
+    #print("Enter Name :")
+    name=input("Name : ")
+    filter_function(data,"",name,"")
     
 class home(Tk):
     def __init__(self):

@@ -6,7 +6,7 @@ def printdataroom(data):
     print("Data Time : "+data[2])
     print(" ")
 def filter_function(Jdata,room,user,date):
-    data= json.loads(Jdata)
+    data= Jdata#json.loads(Jdata)
     dataroom=[]
     for aroom in data['available-room']:
         if(room!=""):
@@ -78,8 +78,7 @@ def filter_function(Jdata,room,user,date):
                     dataroom=[]
                 dataroom=[]    
 
-data = '''
-{
+data = {
   "available-room": [
     {
       "Room": "6272",
@@ -126,13 +125,13 @@ data = '''
     }
   ]
 }
-'''
 
 
-room=input("Room : ")
-user=input("User : ")
-date=input("Date : ")
-filter_function(data,room,user,date)
+
+#room=input("Room : ")
+#user=input("User : ")
+#date=input("Date : ")
+print(filter_function(data,"","jane",""))
 
 
 
