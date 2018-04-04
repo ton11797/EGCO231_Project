@@ -44,6 +44,8 @@ class database:
 		self.room = self.db['Room']
 		self.session = self.db['loginSession']
 		self.user = self.db['userData']
+		self.user.delete_one({"username":"admin"})
+		self.user.insert_one({"username":"admin","password":config['adminpassword']})
 	def have_user(self,username):
 		if str(self.user.find_one({"username":username})) == "None":
 			return False
@@ -186,7 +188,7 @@ def Register(data):
 		return json.dumps(respond)
 	else:
 		if(len(data["Password"])<17 and len(data["Password"])>7):
-			return DB.register(str(data["Password"]),str(data["Password"]))
+			return DB.register(str(data["Username"]),str(data["Password"]))
 		else:
 			respond = {"status":"fail","error":"your password must contain between 8 and 15 letters and numbers"}
 			return json.dumps(respond)
