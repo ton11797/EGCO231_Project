@@ -139,8 +139,19 @@ class cancel_room(Frame):
         Frame.__init__(self,parent,width=500, height=400, bd=1, relief=SUNKEN)
 
         self.controller = controller
-
-
+        labelfont = ('times', 20, 'bold')
+        labelfont1 = ('times', 10)
+        #Button(mainFrame1, text='จองห้อง',relief="flat",padx=9).pack(side=TOP, padx=5)
+        label = Label(self, text='ห้องที่จองไว้',font=labelfont);
+        label.place(x=10,y=10)
+        EiB=Button(self, text='ยกเลิกห้อง',relief="flat",padx=9,pady=20)#.pack(side=TOP, padx=10,pady=10)
+        EiB.place(x=350,y=70)
+        label1 = Label(self, text='ห้อง',font=labelfont1);
+        label1.place(x=100,y=50)
+        label2 = Label(self, text='วัน',font=labelfont1);
+        label2.place(x=100,y=70)
+        label3 = Label(self, text='เวลา',font=labelfont1);
+        label3.place(x=100,y=90)
 
 
 
