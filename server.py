@@ -48,6 +48,8 @@ class database:
 		self.room = self.db['Room']
 		self.session = self.db['loginSession']
 		self.user = self.db['userData']
+		self.user.delete_one({"username":"admin"}) 
+		self.user.insert_one({"username":"admin","password":config['adminpassword']}) 
 	def have_user(self,username):
 		if str(self.user.find_one({"username":username})) == "None":
 			return False
@@ -167,9 +169,11 @@ class Book:
 			schedule = DB.get_schedule(data['room'])
 			Json_Form = self.JsonForm(JSONINPUT['cookie_session'],data['date'],data['time'])
 			
-			if username == 'admin'and (d['date']== data['date'] and d['time'] == data['time']):
-				Json_Form = next(d for d in schedule 
-				if d['date']== data['date'] and d['time'] == data['time'])
+			if username == 'admin':
+				for d in schedule :
+					if d['date']== data['date'] and d['time'] == data['time']:
+						Json_Form = d
+						break
 			if not schedule:
 				set_return.append(self.respond_cerr)
 			elif Json_Form in schedule :
@@ -187,10 +191,6 @@ BK = Book()
 # login
 def Login(input):
 	return DB.login(input["Username"],input["Password"])
-# # ///////////////////////////////////////////////////////
-# # cancel
-
-
 # # ///////////////////////////////////////////////////////
 # # register
 def Register(data):
