@@ -76,7 +76,10 @@ class database:
 		return self.random
  
 	def login(self,username,password):
-		if self.user.find_one({"username":username,"password":password})=="None":
+		print(str(self.user.find_one({"$and":[{"username":username},{"password":password}]}))=="None")
+		print((self.user.find_one({"$and":[{"username":username},{"password":password}]})))
+		if str(self.user.find_one({"$and":[{"username":username},{"password":password}]}))=="None":
+			print("tewt")
 			respond = {"status":"Fail","error":"username or password not match"}
 			return json.dumps(respond)
 		else:
@@ -185,11 +188,7 @@ def Register(data):
 		respond = {"status":"fail","error":"This username is already in use"}
 		return json.dumps(respond)
 	else:
-		if(len(data["Password"])<17 and len(data["Password"])>7):
-			return DB.register(str(data["Password"]),str(data["Password"]))
-		else:
-			respond = {"status":"fail","error":"your password must contain between 8 and 15 letters and numbers"}
-			return json.dumps(respond)
+		return DB.register(str(data["Username"]),str(data["Password"]))
 # # ///////////////////////////////////////////////////////
 # # get room
 def Get_room():

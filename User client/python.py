@@ -55,38 +55,70 @@ class home(Tk):
 #         button = Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
 class search_room(Frame):
 
+    # def search_list_room(self,room,day,month,year,time,list_time):
+    #     textarea = Text(self, height=18, width=60,background='skyblue')
+    #     scrollbar = Scrollbar(textarea)
+    #     scrollbar.place(x=463,y=0,height=290)
+    #     textarea.place(x=5,y=90)
+    #     textarea.config(yscrollcommand=scrollbar.set)
+    #     scrollbar.config(command=textarea.yview)
+    #     if day.get()!= 1 and month.get()!= '-' and year.get()!= 2561:#must choose dd/mm/yy
+    #         if room.get()!='-' and time.get()!='-':
+    #             text = "\n ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()+"\n"+"------------------------------------------------------------\n"
+    #             textarea.insert(END,text)
+    #             #Button(textarea,text='จองห้อง',padx=30).place(x=200,y=30)
+
+    #         elif(room.get()!='-'):
+    #             a = 80
+    #             for i in range(1,len(time['value'])):
+    #                 text = "\n ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][i]+"\n"+"------------------------------------------------------------\n"
+    #                 textarea.insert(END,text)
+    #                 #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
+    #         elif(time.get()!= '-'):
+    #             a = 80
+    #             for i in range(1,len(room['value'])):
+    #                 text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()+"\n"+"------------------------------------------------------------\n"
+    #                 textarea.insert(END,text)
+    #                 #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
+    #         else :
+    #             a =80
+    #             for i in range(1,len(room['value'])):
+    #                 for j in range(1,len(time['value'])):
+    #                     text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][j]+"\n"+"------------------------------------------------------------\n"
+    #                     textarea.insert(END,text)
+    #                     #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(j-1)))
     def search_list_room(self,room,day,month,year,time,list_time):
-        textarea = Text(self, height=18, width=60,background='skyblue')
-        scrollbar = Scrollbar(textarea)
-        scrollbar.place(x=463,y=0,height=290)
-        textarea.place(x=5,y=90)
-        textarea.config(yscrollcommand=scrollbar.set)
-        scrollbar.config(command=textarea.yview)
+        panewd = PanedWindow(self,height=18, width=60)
+        scrollbar = Scrollbar(panewd)
+        scrollbar.pack(side=RIGHT, fill=Y)
+        i=0
         if day.get()!= 1 and month.get()!= '-' and year.get()!= 2561:#must choose dd/mm/yy
             if room.get()!='-' and time.get()!='-':
-                text = "\n ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()+"\n"+"------------------------------------------------------------\n"
-                textarea.insert(END,text)
-                #Button(textarea,text='จองห้อง',padx=30).place(x=200,y=30)
+                panelb = PanedWindow(panewd,height=6,width=60)
+                lb = Label(panelb,text="ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()).grid(row=0,column=0)
+            #     #Button(textarea,text='จองห้อง',padx=30).place(x=200,y=30)
 
-            elif(room.get()!='-'):
-                a = 80
-                for i in range(1,len(time['value'])):
-                    text = "\n ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][i]+"\n"+"------------------------------------------------------------\n"
-                    textarea.insert(END,text)
-                    #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
-            elif(time.get()!= '-'):
-                a = 80
-                for i in range(1,len(room['value'])):
-                    text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()+"\n"+"------------------------------------------------------------\n"
-                    textarea.insert(END,text)
-                    #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
-            else :
-                a =80
-                for i in range(1,len(room['value'])):
-                    for j in range(1,len(time['value'])):
-                        text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][j]+"\n"+"------------------------------------------------------------\n"
-                        textarea.insert(END,text)
-                        #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(j-1)))
+            # elif(room.get()!='-'):
+            #     a = 80
+            #     for i in range(1,len(time['value'])):
+            #         text = "\n ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][i]+"\n"+"------------------------------------------------------------\n"
+            #         textarea.insert(END,text)
+            #         #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
+            # elif(time.get()!= '-'):
+            #     a = 80
+            #     for i in range(1,len(room['value'])):
+            #         text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()+"\n"+"------------------------------------------------------------\n"
+            #         textarea.insert(END,text)
+            #         #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
+            # else :
+            #     a =80
+            #     for i in range(1,len(room['value'])):
+            #         for j in range(1,len(time['value'])):
+            #             text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][j]+"\n"+"------------------------------------------------------------\n"
+            #             textarea.insert(END,text)
+            #             #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(j-1)))
+        
+        panewd.place(x=5,y=90)        
 
     def __init__(self, parent, controller):
         Frame.__init__(self,parent,width=500, height=400, bd=1, relief=SUNKEN)
@@ -118,41 +150,6 @@ class search_room(Frame):
         time.place(x=400,y=10)
         time.current(0)
         button = Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
-
-    def search_list_room(self,room,day,month,year,time,list_time):
-        #filtered_data=filter_function(raw_data,room=room,date=day+month+year)
-
-        textarea = Text(self, height=18, width=60,background='skyblue')
-        scrollbar = Scrollbar(textarea)
-        scrollbar.place(x=463,y=0,height=290)
-        textarea.place(x=5,y=90)
-        textarea.config(yscrollcommand=scrollbar.set)
-        scrollbar.config(command=textarea.yview)
-        if day.get()!= 1 and month.get()!= '-' and year.get()!= 2561:#must choose dd/mm/yy
-            if room.get()!='-' and time.get()!='-':
-                text = "\n ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()+"\n"+"------------------------------------------------------------\n"
-                textarea.insert(END,text)
-                #Button(textarea,text='จองห้อง',padx=30).place(x=200,y=30)
-
-            elif(room.get()!='-'):
-                a = 80
-                for i in range(1,len(time['value'])):
-                    text = "\n ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][i]+"\n"+"------------------------------------------------------------\n"
-                    textarea.insert(END,text)
-                    #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
-            elif(time.get()!= '-'):
-                a = 80
-                for i in range(1,len(room['value'])):
-                    text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()+"\n"+"------------------------------------------------------------\n"
-                    textarea.insert(END,text)
-                    #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
-            else :
-                a =80
-                for i in range(1,len(room['value'])):
-                    for j in range(1,len(time['value'])):
-                        text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][j]+"\n"+"------------------------------------------------------------\n"
-
-
 
 
 class reserve_room(Frame):
