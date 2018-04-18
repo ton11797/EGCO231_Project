@@ -1,5 +1,5 @@
 from tkinter import *
-import requests
+
 import tkinter
 
 class home(Tk):
@@ -91,7 +91,74 @@ class reserve_room(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self,parent,width=500, height=400, bd=1, relief=SUNKEN)
         self.controller = controller
-        
+
+        Label(self,text="เลือกห้องประชุม").place(x=80,y=20)
+        combo1 = ttk.Combobox(self)
+        combo1.place(x=80,y=50)
+        combo1['values'] = ('15','17','6','0')
+
+        Label(self,text="เลือกวัน").place(x=280,y=20)
+        combo2 = ttk.Combobox(self)
+        combo2.place(x=280,y=50)
+        combo2['values'] = ('15','17','6','0')
+
+        Label(self,text="เวลาเริ่มต้น").place(x=80,y=100)
+        combo3 = ttk.Combobox(self)
+        combo3.place(x=80,y=130)
+        combo3['values'] = ('15','17','6','0')
+
+        #Label(self,text="เวลาสิ้นสุด").place(x=280,y=100)
+        #combo4 = ttk.Combobox(self)
+        #combo4.place(x=280,y=130)
+        #combo4['values'] = ('15','17','6','0')
+
+        Label(self,text="ชื่อนาสกุลผู้จอง").place(x=80,y=180)
+        combo4 = Entry(self)
+        combo4.place(x=80,y=210)
+
+        textOption = Label(self,text="อุปกรณ์ที่ใช้")
+        textOption.place(x=80,y=250)
+        varVar1 = IntVar(self)
+        R1 = Checkbutton(self, text="โปรเจตเตอร์",variable=varVar1,onvalue = 1, offvalue = 0).place(x=80,y=280)
+        R2 = Checkbutton(self, text="คอมพิวเตอร์",onvalue = 1, offvalue = 0).place(x=170,y=280)
+        R3 = Checkbutton(self, text="ไมโครโฟน",onvalue = 1, offvalue = 0).place(x=260,y=280)
+
+
+        b1 = Button(self,text='ยืนยัน',command=lambda : self.Book(combo1,combo2,combo3,combo4,R1,R2,R3)).place(x=80,y=330)
+        b2 = Button(self,text='ล้างข้อมูล',command=lambda :self.Clear(combo1,combo2,combo3,combo4,R1,R2,R3)).place(x=180,y=330)
+
+
+    def Clear(self,combo1,combo2,combo3,combo4,R1,R2,R3):
+        combo1.set('')
+        combo2.set('')
+        combo3.set('')
+        combo4.delete(0,'end')
+
+    def Book(self,combo1,combo2,combo3,combo4,R1,R2,R3):
+        if combo1.get()!="" and combo2.get()!="" and combo3.get()!="" and combo4.get()!="":
+            data={
+                "available-room":[
+                    {
+                        "Room":"%s"%(combo1.get()),
+                        "schedule":[
+                            {
+                                "Username":"%s"%(combo4.get()),
+                                "Data_Time":[
+                                    {
+                                        "Date":"%s"%(combo2.get()),
+                                        "Time":"%s"%(combo3.get())
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+
+            #send data
+            #headers = {'Content-Type': 'application/json'}
+            #reaponse = requests.post(fileip+"/book",headers=headers,data= json.dumps(DATA))
+            #return reaponse.text
 
 class cancel_room(Frame):
 
