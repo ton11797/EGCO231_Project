@@ -198,11 +198,7 @@ def Register(data):
 		respond = {"status":"fail","error":"This username is already in use"}
 		return json.dumps(respond,sort_keys=True,indent=2)
 	else:
-		if(len(data["Password"])<17 and len(data["Password"])>7):
-			return DB.register(str(data["Username"]),str(data["Password"]))
-		else:
-			respond = {"status":"fail","error":"your password must contain between 8 and 15 letters and numbers"}
-			return json.dumps(respond,sort_keys=True,indent=2)
+		return DB.register(str(data["Username"]),str(data["Password"]))
 # # ///////////////////////////////////////////////////////
 # # get room
 def Get_room():
