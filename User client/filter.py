@@ -7,35 +7,35 @@ def filter_function(Jdata,room,user,date):
     allroom=[]
     for aroom in data['available-room']:
         if(room!=""):
-            if(room==aroom['Room']):            
+            if(room==aroom['room']):            
                 for scheduleroom in aroom['schedule']:
-                    dataroom.append(aroom['Room'])
+                    dataroom.append(aroom['room'])
                     if(user!=""):
                         if(user==scheduleroom['Username']):
                             dataroom.append(scheduleroom['Username'])
                             if(date!=""):
-                                for word in scheduleroom['Data Time'].split():
+                                for word in scheduleroom['Data_Time'].split():
                                     if(word==date):
-                                        dataroom.append(scheduleroom['Data Time'])
+                                        dataroom.append(scheduleroom['Data_Time'])
                                         allroom.append(dataroom)
                                         dataroom=[]
                                 
                             else:
                             
-                                dataroom.append(scheduleroom['Data Time'])
+                                dataroom.append(scheduleroom['Data_Time'])
                                 allroom.append(dataroom)
                                 dataroom=[]
                             dataroom=[]
                     else:
                         dataroom.append(scheduleroom['Username'])
                         if(date!=""):
-                            for word in scheduleroom['Data Time'].split():
+                            for word in scheduleroom['Data_Time'].split():
                                 if(word==date):
-                                    dataroom.append(scheduleroom['Data Time'])
+                                    dataroom.append(scheduleroom['Data_Time'])
                                     allroom.append(dataroom)
                                     dataroom=[]
                         else:
-                            dataroom.append(scheduleroom['Data Time'])
+                            dataroom.append(scheduleroom['Data_Time'])
                             allroom.append(dataroom)
                             dataroom=[]
                         dataroom=[]
@@ -43,40 +43,38 @@ def filter_function(Jdata,room,user,date):
         else:
         
             for scheduleroom in aroom['schedule']:
-                dataroom.append(aroom['Room'])
+                dataroom.append(aroom['room'])
                 if(user!=""):
                     if(user==scheduleroom['Username']):
                         dataroom.append(scheduleroom['Username'])
                         if(date!=""):
-                            for word in scheduleroom['Data Time'].split():
+                            for word in scheduleroom['Data_Time'].split():
                                 if(word==date):
-                                    dataroom.append(scheduleroom['Data Time'])
+                                    dataroom.append(scheduleroom['Data_Time'])
                                     allroom.append(dataroom)
                                     dataroom=[]
                                 
                         else:
                             
-                            dataroom.append(scheduleroom['Data Time'])
+                            dataroom.append(scheduleroom['Data_Time'])
                             allroom.append(dataroom)
                             dataroom=[]
                         dataroom=[]
                 else:
                     dataroom.append(scheduleroom['Username'])
                     if(date!=""):
-                        for word in scheduleroom['Data Time'].split():
+                        for word in scheduleroom['Data_Time'].split():
                                 if(word==date):
-                                    dataroom.append(scheduleroom['Data Time'])
+                                    dataroom.append(scheduleroom['Data_Time'])
                                     allroom.append(dataroom)
                                     dataroom=[]
                     else:
-                        dataroom.append(scheduleroom['Data Time'])
+                        dataroom.append(scheduleroom['Data_Time'])
                         allroom.append(dataroom)
                         dataroom=[]
                     dataroom=[]
                 dataroom=[]
     return allroom
     
-
-      
-   
-
+jdata = (open('input.json')).read()
+print(filter_function(jdata,"","",""))

@@ -1,6 +1,6 @@
-<<<<<<< HEAD
+from tkinter import ttk
 from tkinter import *
-
+import requests
 import tkinter
 
 class home(Tk):
@@ -23,7 +23,7 @@ class home(Tk):
         menuList.grid( row=0,column=0,pady=10, padx=5)
         self.show_frame("reserve_room")
         #get roomlist
-        self.room_list = requests.get(fileip+"/list")
+        # self.room_list = requests.get(fileip+"/list")
 
         # run
         self.mainloop()

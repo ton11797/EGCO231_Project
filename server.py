@@ -184,6 +184,7 @@ class Book:
 
 	def Cancel(self,JSONINPUT):
 		set_return = []
+		print(JSONINPUT['cookie_session'])
 		username = DB.whois(JSONINPUT['cookie_session'])
 		for data in JSONINPUT['Data']:
 			schedule = DB.get_schedule(data['room'])
