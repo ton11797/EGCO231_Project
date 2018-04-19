@@ -1,6 +1,7 @@
 from tkinter import *
-
-import tkinter
+from tkinter import ttk
+from tkcalendar import Calendar, DateEntry
+import json
 
 class home(Tk):
 
@@ -22,7 +23,7 @@ class home(Tk):
         menuList.grid( row=0,column=0,pady=10, padx=5)
         self.show_frame("reserve_room")
         #get roomlist
-        self.room_list = requests.get(fileip+"/list")
+        # self.room_list = requests.get(fileip+"/list")
 
         # run
         self.mainloop()
@@ -32,28 +33,8 @@ class home(Tk):
         frame.tkraise()
 
 class search_room(Frame):
-    def __init__(self, parent, controller):
-        Frame.__init__(self,parent,width=500, height=400, bd=1, relief=SUNKEN)
-        self.controller = controller
-        month = ttk.Combobox(self,width=10,state='readonly')
-        month.place(x=205,y=10)
-        month['value'] = ('-','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม')
-        month.current(0)
-        #ปี
-        year = ttk.Combobox(self,width=5,state='readonly')
-        year.place(x=310,y=10)
-        year['value'] =['-']+[i for i in range(2561,2571)]
-        year.current(0)
-        #เวลา
-        list_time = ['-','07.00-08.00','08.00-09.00','09.00-10.00','10.00-11.00','11.00-12.00','13.00-14.00','14.00-15.00','15.00-16.00','16.00-17.00','17.00-18.00','18.00-19.00','19.00-20.00','20.00-21.00','21.00-22.00']
-        time = ttk.Combobox(self,width=10,value = list_time,state='readonly')
-        time.place(x=400,y=10)
-        time.current(0)
-        button = Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
 
     def search_list_room(self,room,day,month,year,time,list_time):
-        #filtered_data=filter_function(raw_data,room=room,date=day+month+year)
-
         textarea = Text(self, height=18, width=60,background='skyblue')
         scrollbar = Scrollbar(textarea)
         scrollbar.place(x=463,y=0,height=290)
@@ -83,7 +64,54 @@ class search_room(Frame):
                 for i in range(1,len(room['value'])):
                     for j in range(1,len(time['value'])):
                         text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][j]+"\n"+"------------------------------------------------------------\n"
+                        textarea.insert(END,text)
+                        #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(j-1)))
 
+    def __init__(self, parent, controller):
+        Frame.__init__(self,parent,width=500, height=400, bd=1, relief=SUNKEN)
+        self.controller = controller
+
+        #ห้อง
+        room = ttk.Combobox(self,width=5,state='readonly')
+        room.place(x=35,y=10)
+        room['value'] = ('-','6272','6273','6274')
+        room.current(0)
+        #วัน
+        day = ttk.Combobox(self,width=5,state='readonly')
+        day.place(x=115,y=10)
+        day['value'] =['-']+ [i for i in range(1,32)]
+        day.current(0)
+        #เดือน
+        month = ttk.Combobox(self,width=10,state='readonly')
+        month.place(x=205,y=10)
+        month['value'] = ('-','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม')
+        month.current(0)
+        #ปี
+        year = ttk.Combobox(self,width=5,state='readonly')
+        year.place(x=310,y=10)
+        year['value'] =['-']+[i for i in range(2561,2571)]
+        year.current(0)
+        #เวลา
+        list_time = ['-','07.00-08.00','08.00-09.00','09.00-10.00','10.00-11.00','11.00-12.00','13.00-14.00','14.00-15.00','15.00-16.00','16.00-17.00','17.00-18.00','18.00-19.00','19.00-20.00','20.00-21.00','21.00-22.00']
+        time = ttk.Combobox(self,width=10,value = list_time,state='readonly')
+        time.place(x=400,y=10)
+        time.current(0)
+        Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
+
+    def search_list_room(self,room,day,month,year,time,list_time):
+        #filtered_data=filter_function(raw_data,room=room,date=day+month+year)
+
+        data = json.load(open('input.json'))
+
+
+        roomlist_frame= Frame(self,height=310, width=490,background='skyblue')
+        roomlist_frame.place(x=5,y=90)
+
+        scrollbar = Scrollbar(roomlist_frame)
+        scrollbar.place(x=475,y=0,height=310)
+
+        for room in data["available-room"]:
+            room_name = room["Room"]
 
 
 
@@ -107,10 +135,9 @@ class reserve_room(Frame):
         combo3.place(x=80,y=130)
         combo3['values'] = ('15','17','6','0')
 
-        #Label(self,text="เวลาสิ้นสุด").place(x=280,y=100)
-        #combo4 = ttk.Combobox(self)
-        #combo4.place(x=280,y=130)
-        #combo4['values'] = ('15','17','6','0')
+        widget = Calendar(self)
+        widget.place(x=280,y=130)
+
 
         Label(self,text="ชื่อนาสกุลผู้จอง").place(x=80,y=180)
         combo4 = Entry(self)
@@ -124,7 +151,7 @@ class reserve_room(Frame):
         R3 = Checkbutton(self, text="ไมโครโฟน",onvalue = 1, offvalue = 0).place(x=260,y=280)
 
 
-        b1 = Button(self,text='ยืนยัน',command=lambda : self.Book(combo1,combo2,combo3,combo4,R1,R2,R3)).place(x=80,y=330)
+        b1 = Button(self,text='ยืนยัน',command=lambda : self.Book(combo1,combo2,combo3,combo4,widget,R2,R3)).place(x=80,y=330)
         b2 = Button(self,text='ล้างข้อมูล',command=lambda :self.Clear(combo1,combo2,combo3,combo4,R1,R2,R3)).place(x=180,y=330)
 
 
@@ -134,25 +161,18 @@ class reserve_room(Frame):
         combo3.set('')
         combo4.delete(0,'end')
 
-    def Book(self,combo1,combo2,combo3,combo4,R1,R2,R3):
+    def Book(self,combo1,combo2,combo3,combo4,widget,R2,R3):
+        print (widget.selection_get())
         if combo1.get()!="" and combo2.get()!="" and combo3.get()!="" and combo4.get()!="":
             data={
-                "available-room":[
+                "Data":[
                     {
-                        "Room":"%s"%(combo1.get()),
-                        "schedule":[
-                            {
-                                "Username":"%s"%(combo4.get()),
-                                "Data_Time":[
-                                    {
-                                        "Date":"%s"%(combo2.get()),
-                                        "Time":"%s"%(combo3.get())
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+                        "room":"%s"%(combo1.get()),
+                        "date":"%s"%(combo2.get()),
+                        "time":"%s"%(combo3.get())
+                    },
+                ],
+
             }
 
             #send data

@@ -1,6 +1,7 @@
 import json
 from pprint import pprint
 
+
 def filter_function(Jdata,room,user,date):
     data= json.loads(Jdata)
     dataroom=[]
@@ -75,8 +76,8 @@ def filter_function(Jdata,room,user,date):
                     dataroom=[]
                 dataroom=[]
     return allroom
-    
 
-      
+data = json.dump(open('input.json'))
+print(filter_function(data,"6272","",""))
    
 
