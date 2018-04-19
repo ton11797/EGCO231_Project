@@ -82,7 +82,9 @@ class database:
 		return self.random
  
 	def login(self,username,password):
-		if self.user.find_one({"username":username,"password":password})=="None":
+		print(username)
+		print(password)
+		if str(self.user.find_one({"username":username,"password":password}))=="None":
 			respond = {"status":"Fail","error":"username or password not match"}
 			return json.dumps(respond,sort_keys=True,indent=2)
 		else:
@@ -116,6 +118,24 @@ class database:
 
  
 DB = database()
+def Cancel(data):
+    booklist = DB.get_room()
+    array=[]
+    for book in booklist["available-room"]:
+        for cancel in data["Data"]:
+            if cancel["Room"]==book["Room"]:
+                status = False
+                for schedule in book["schedule"]:
+                    if cancel["Data_Time"]==book["Data_Time"]:
+                        if DB.whois(data["cookie_session"])=="admin" or DB.whois(data["cookie_session"])==schedule["Username"]:
+                            array.append({"Room":cancel["Room"],"Data_time":cancel["Data_Time"],"status":"success","error":"none"})
+                            status = True
+                        else:
+                            array.append({"Room":cancel["Room"],"Data_time":cancel["Data_Time"],"status":"fail","error":"Permission denied"})
+                if status:
+                    array.append({"Room":cancel["Room"],"Data_time":cancel["Data_Time"],"status":"fail","error":"Room available"})
+    respond = {"Data":array}
+    return json.dumps(respond)
 
 # ///////////////////////////////////////////////////////
 # book
@@ -198,7 +218,7 @@ def Register(data):
 		respond = {"status":"fail","error":"This username is already in use"}
 		return json.dumps(respond,sort_keys=True,indent=2)
 	else:
-		return DB.register(str(data["Username"]),str(data["Password"]))
+			return DB.register(str(data["Username"]),str(data["Password"]))
 # # ///////////////////////////////////////////////////////
 # # get room
 def Get_room():
