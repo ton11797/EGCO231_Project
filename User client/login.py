@@ -1,16 +1,19 @@
 <<<<<<< HEAD
 from tkinter import *
 import tkinter.messagebox as tm
-
+import api
 def post_login(login):
     #respond = {"status":"fail","error":login['username']+login['password']}
-
-    respond = {"status":"success","error":login['username']+login['password']}
+    A=api.getipfromfile("config.txt")
+    respond = api.SendLogin(login['username'],api.hash_password(login['password']),A)
+    print(respond)
     return respond
 
 def post_regis(login):
-    respond = {"status":"fail","error":login['username']+login['password']}
-    #respond = {"status":"success","error":login['username']+login['password']}
+    # respond = {"status":"fail","error":login['username']+login['password']}
+    A=api.getipfromfile("config.txt")
+    respond = api.SendRegister(login['username'],api.hash_password(login['password']),A)
+    print(respond)
     return respond
 
 class LoginFrame(Frame):
@@ -109,7 +112,7 @@ class LoginFrame(Frame):
         response = post_regis(regis)
         print(response)
         if(response['status']=="success"):
-            #root.destroy
+            # root.destroy
             return True
         else:
             return response['error']
