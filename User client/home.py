@@ -121,55 +121,59 @@ class reserve_room(Frame):
         self.controller = controller
 
         Label(self,text="เลือกห้องประชุม").place(x=80,y=20)
-        combo1 = ttk.Combobox(self)
-        combo1.place(x=80,y=50)
-        combo1['values'] = ('15','17','6','0')
+        room = ttk.Combobox(self)
+        room.place(x=80,y=50)
+        room['values'] = ('15','17','6','0')
 
-        Label(self,text="เลือกวัน").place(x=280,y=20)
-        combo2 = ttk.Combobox(self)
-        combo2.place(x=280,y=50)
-        combo2['values'] = ('15','17','6','0')
+        Label(self,text="เลือกเวลา").place(x=280,y=20)
+        begin_time = ttk.Combobox(self,width=5)
+        begin_time.place(x=280,y=50)
+        begin_time['values'] =['-']+["07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"]
 
-        Label(self,text="เวลาเริ่มต้น").place(x=80,y=100)
-        combo3 = ttk.Combobox(self)
-        combo3.place(x=80,y=130)
-        combo3['values'] = ('15','17','6','0')
+        Label(self,text="ถึง").place(x=340,y=50)
 
-        widget = Calendar(self)
-        widget.place(x=280,y=130)
+        end_time = ttk.Combobox(self,width=5)
+        end_time.place(x=370,y=50)
+        end_time['values'] =['-']+["07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"]
+
+        Label(self,text="เลือกวัน").place(x=80,y=100)
+        date = Calendar(self,width=20,height=100)
+        date.place(x=80,y=130)
 
 
-        Label(self,text="ชื่อนาสกุลผู้จอง").place(x=80,y=180)
-        combo4 = Entry(self)
-        combo4.place(x=80,y=210)
 
-        textOption = Label(self,text="อุปกรณ์ที่ใช้")
-        textOption.place(x=80,y=250)
+
+
+
+
         varVar1 = IntVar(self)
-        R1 = Checkbutton(self, text="โปรเจตเตอร์",variable=varVar1,onvalue = 1, offvalue = 0).place(x=80,y=280)
-        R2 = Checkbutton(self, text="คอมพิวเตอร์",onvalue = 1, offvalue = 0).place(x=170,y=280)
-        R3 = Checkbutton(self, text="ไมโครโฟน",onvalue = 1, offvalue = 0).place(x=260,y=280)
+        R1 = Checkbutton(self, text="โปรเจตเตอร์",variable=varVar1,onvalue = 1, offvalue = 0)
+        R2 = Checkbutton(self, text="คอมพิวเตอร์",onvalue = 1, offvalue = 0)
+        R3 = Checkbutton(self, text="ไมโครโฟน",onvalue = 1, offvalue = 0)
 
 
-        b1 = Button(self,text='ยืนยัน',command=lambda : self.Book(combo1,combo2,combo3,combo4,widget,R2,R3)).place(x=80,y=330)
-        b2 = Button(self,text='ล้างข้อมูล',command=lambda :self.Clear(combo1,combo2,combo3,combo4,R1,R2,R3)).place(x=180,y=330)
+        Button(self,text='ยืนยัน',command=lambda : self.Book(room,begin_time,end_time,date)).place(x=80,y=330)
+        Button(self,text='ล้างข้อมูล',command=lambda :self.Clear(room,begin_time,end_time,date)).place(x=180,y=330)
 
 
-    def Clear(self,combo1,combo2,combo3,combo4,R1,R2,R3):
-        combo1.set('')
-        combo2.set('')
-        combo3.set('')
+    def Clear(self,room,begin_time,end_time,combo4):
+        room.set('')
+        begin_time.set('')
+        end_time.set('')
         combo4.delete(0,'end')
 
-    def Book(self,combo1,combo2,combo3,combo4,widget,R2,R3):
-        print (widget.selection_get())
-        if combo1.get()!="" and combo2.get()!="" and combo3.get()!="" and combo4.get()!="":
+    def Book(self,room,begin_time,end_time,date):
+        print (date.selection_get())
+        import datetime
+        now = datetime.datetime.now()
+        print (now.year)
+        if room.get()!="" and begin_time.get()!="" and end_time.get()!="":
             data={
                 "Data":[
                     {
-                        "room":"%s"%(combo1.get()),
-                        "date":"%s"%(combo2.get()),
-                        "time":"%s"%(combo3.get())
+                        "room":"%s"%(room.get()),
+                        "date":"%s"%(begin_time.get()),
+                        "time":"%s"%(end_time.get())
                     },
                 ],
 
