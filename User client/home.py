@@ -48,7 +48,7 @@ class search_room(Frame):
         for f_data in filtered_data:
             a = 80
             dtime = f_data[2].split()
-            text = "\n ห้อง\t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา\t: "+ dtime[1] +"\n"+"------------------------------------------------------------\n"
+            text = "\n ห้อง \t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา \t: "+ dtime[1] +"\n"+"------------------------------------------------------------\n"
             self.textarea.insert(END,text)
             #Button(self.textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
 
@@ -59,7 +59,7 @@ class search_room(Frame):
         #ห้อง
         room = ttk.Combobox(self,width=5,state='readonly')
         room.place(x=35,y=10)
-        room['value'] = ('','6272','6273','6274')
+        room['value'] = ('','6272','6273','6274',"6275","6276","309/1","309/2","310")
         room.current(0)
         #วัน
         day = ttk.Combobox(self,width=5,state='readonly')
@@ -83,21 +83,36 @@ class search_room(Frame):
         time.current(0)
         Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
         #show
-        self.textarea = Text(self, height=18, width=60,background='skyblue')
-        self.scrollbar = Scrollbar(self.textarea)
-        self.scrollbar.place(x=463,y=0,height=290)
-        self.textarea.place(x=5,y=90)
-        self.textarea.config(yscrollcommand=self.scrollbar.set)
-        self.scrollbar.config(command=self.textarea.yview)
+        # self.textarea = Text(self, height=18, width=60,background='skyblue')
+        # self.scrollbar = Scrollbar(self.textarea)
+        # self.scrollbar.place(x=463,y=0,height=290)
+        # self.textarea.place(x=5,y=90)
+        # self.textarea.config(yscrollcommand=self.scrollbar.set)
+        # self.scrollbar.config(command=self.textarea.yview)
+
+        # self.filtered_data=filter_function(A.GetList(),"","","")
+
+        # for f_data in self.filtered_data:
+        #     a = 80
+        #     dtime = f_data[2].split()
+        #     text = "\n ห้อง\t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา\t: "+ dtime[1] +"\n"+"------------------------------------------------------------\n"
+        #     self.textarea.insert(END,text)
+        #     #Button(self.textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
+        self.textarea = Frame(self, height=500, width=465,background='#283149')
+        self.textarea.place(x=15,y=90)
+        # self.scrollbar = Scrollbar(self.textarea,orient= VERTICAL, command=self.textarea.yview)
+        # self.textarea.config(yscrollcommand=self.scrollbar.set)
+        # self.scrollbar.config(command=self.textarea.yview)
+
 
         self.filtered_data=filter_function(A.GetList(),"","","")
-
+        space = 0
         for f_data in self.filtered_data:
-            a = 80
             dtime = f_data[2].split()
             text = "\n ห้อง\t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา\t: "+ dtime[1] +"\n"+"------------------------------------------------------------\n"
-            self.textarea.insert(END,text)
-            #Button(self.textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
+            lb = Label(self.textarea,text = text, borderwidth=3,width=60, relief="groove",background='#FEF2BF')
+            lb.place(x=17,y=20 + space)
+            space +=110
 
 
 
