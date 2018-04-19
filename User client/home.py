@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from tkinter import *
 
 import tkinter
