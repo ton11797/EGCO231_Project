@@ -1,5 +1,8 @@
 import json
 from pprint import pprint
+import api
+
+A = api.API_cen()
 
 
 def filter_function(Jdata,room,user,date):
@@ -12,31 +15,32 @@ def filter_function(Jdata,room,user,date):
                 for scheduleroom in aroom['schedule']:
                     dataroom.append(aroom['room'])
                     if(user!=""):
-                        if(user==scheduleroom['Username']):
-                            dataroom.append(scheduleroom['Username'])
+                        if(user==scheduleroom['username']):
+                            dataroom.append(scheduleroom['username'])
                             if(date!=""):
-                                for word in scheduleroom['Data_Time'].split():
-                                    if(word==date):
-                                        dataroom.append(scheduleroom['Data_Time'])
-                                        allroom.append(dataroom)
-                                        dataroom=[]
+                                if date == scheduleroom['date']:
+                                    Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                    dataroom.append(Date_Time)
+                                    allroom.append(dataroom)
+                                    dataroom=[]
                                 
                             else:
-                            
-                                dataroom.append(scheduleroom['Data_Time'])
+                                Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                dataroom.append(Date_Time)
                                 allroom.append(dataroom)
                                 dataroom=[]
                             dataroom=[]
                     else:
-                        dataroom.append(scheduleroom['Username'])
+                        dataroom.append(scheduleroom['username'])
                         if(date!=""):
-                            for word in scheduleroom['Data_Time'].split():
-                                if(word==date):
-                                    dataroom.append(scheduleroom['Data_Time'])
-                                    allroom.append(dataroom)
-                                    dataroom=[]
+                            if date == scheduleroom['date']:
+                                Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                dataroom.append(Date_Time)
+                                allroom.append(dataroom)
+                                dataroom=[]
                         else:
-                            dataroom.append(scheduleroom['Data_Time'])
+                            Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                            dataroom.append(Date_Time)
                             allroom.append(dataroom)
                             dataroom=[]
                         dataroom=[]
@@ -46,38 +50,42 @@ def filter_function(Jdata,room,user,date):
             for scheduleroom in aroom['schedule']:
                 dataroom.append(aroom['room'])
                 if(user!=""):
-                    if(user==scheduleroom['Username']):
-                        dataroom.append(scheduleroom['Username'])
+                    if(user==scheduleroom['username']):
+                        dataroom.append(scheduleroom['username'])
                         if(date!=""):
-                            for word in scheduleroom['Data_Time'].split():
-                                if(word==date):
-                                    dataroom.append(scheduleroom['Data_Time'])
-                                    allroom.append(dataroom)
-                                    dataroom=[]
+                            if date == scheduleroom['date']:
+                                Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                dataroom.append(Date_Time)
+                                allroom.append(dataroom)
+                                dataroom=[]
                                 
                         else:
-                            
                             dataroom.append(scheduleroom['Data_Time'])
                             allroom.append(dataroom)
                             dataroom=[]
                         dataroom=[]
                 else:
-                    dataroom.append(scheduleroom['Username'])
+                    dataroom.append(scheduleroom['username'])
                     if(date!=""):
-                        for word in scheduleroom['Data_Time'].split():
-                                if(word==date):
-                                    dataroom.append(scheduleroom['Data_Time'])
-                                    allroom.append(dataroom)
-                                    dataroom=[]
+                            if date == scheduleroom['date']:
+                                Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                dataroom.append(Date_Time)
+                                allroom.append(dataroom)
+                                dataroom=[]
                     else:
-                        dataroom.append(scheduleroom['Data_Time'])
+                        Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                        dataroom.append(Date_Time)
                         allroom.append(dataroom)
                         dataroom=[]
                     dataroom=[]
                 dataroom=[]
     return allroom
 
-data = json.dump(open('input.json'))
-print(filter_function(data,"6272","",""))
+# data = json.dump(open('input.json'))
+#print(A.SendLogin("ton123","1234"))
+#print(A.GetList())
+data = A.GetList()
+print(data)
+print(filter_function(data,"6272","","" ))
    
 

@@ -23,11 +23,11 @@ class API_cen():
     def SendBook(self,DATA):
         headers = {'Content-Type': 'application/json'}
         DATA['cookie_session']=self.cookies
-        print(DATA)
-        # d = requests.post(self.config+"/book",headers=headers,data= json.dumps(DATA))
-        # return d.text
+        d = requests.post(self.config+"/book",headers=headers,data= json.dumps(DATA))
+        return d.text
     def SendCancel(self,DATA):
         headers = {'Content-Type': 'application/json'}
+        DATA['cookie_session']=self.cookies
         can=requests.post(self.config+"/cancel",headers=headers,data= json.dumps(DATA))
         return can.text
 
@@ -77,30 +77,31 @@ class API_cen():
     def get_user(self):
         return self.username
 A = API_cen()
-data ={
-    "Data":[
-      { 
-        "room":"6275",
-        "date":"2/2/61",
-        "time":"08:00-11:00"
-      },
-      { 
-        "room":"6275",
-        "date":"2/2/61",
-        "time":"10:00-11:00"
-      },
-      { 
-        "room":"6275",
-        "date":"3/2/61",
-        "time":"11:00-13:00"
-      }
+# data ={
+#     "Data":[
+#       { 
+#         "room":"6275",
+#         "date":"2/2/61",
+#         "time":"08:00-11:00"
+#       },
+#       { 
+#         "room":"6275",
+#         "date":"2/2/61",
+#         "time":"10:00-11:00"
+#       },
+#       { 
+#         "room":"6275",
+#         "date":"3/2/61",
+#         "time":"11:00-13:00"
+#       }
       
-    ]
-  }
-print(A.SendLogin("ton123","1234"))
-print(A.SendBook(data))
+#     ],
+#     "cookie_session":"X6OP9B3TjhXd1GyXI1u22bC0snEXTKQ10402044846"
+#   }
+
+# print(A.SendCanpcel(data))
 # print(A.SendCancel(data))
-# print(A.SendRegister("ton123","1234"))
+#print(A.SendRegister("ton123","1234"))
 # print(A.SendLogin("ton123","1234"))
-# print(A.get_user())
+# print(A.GetList())
 # A=getipfromfile("config.txt")
