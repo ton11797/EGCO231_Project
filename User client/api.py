@@ -43,6 +43,16 @@ class API_cen():
         password= hashed_password
         return password == hashlib.sha256(user_password.encode()).hexdigest()
     
+    def write_login(self):
+        file_object  = open("tmp", "w")
+        file_object.write(self.username+"\n") 
+        file_object.write(self.cookies) 
+        file_object.close()
+    def read_login(self):
+        file_object  = open("tmp", "r")
+        self.username=file_object.read().strip()
+        self.cookies=file_object.read().strip()
+        file_object.close()
     # new_pass = input('Please enter a password: ')
     # hashed_password = hash_password(new_pass)
     # print('The string to store in the db is: ' + hashed_password)
@@ -57,6 +67,8 @@ class API_cen():
             return k
         self.cookies = json.loads(k)['cookie_session']
         self.username = User
+        self.write_login()
+        self.read_login()
         return k 
 
     def check(self,username,password):

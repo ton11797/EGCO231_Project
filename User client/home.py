@@ -4,8 +4,10 @@ import tkinter as tk
 from tkcalendar import Calendar, DateEntry
 import json
 import api
+import time
 A = api.API_cen()
-
+print(A.SendRegister("ton1234","ton1234"))
+print(A.SendLogin("ton1234","ton1234"))
 class home(Tk):
 
     def __init__(self):
@@ -119,7 +121,7 @@ class search_room(Frame):
         self.subframe = Frame(self,bg = "#283149",relief=SUNKEN)
         self.subframe.place(x=15,y=90)
 
-        self.scrollable_body = Scrollable(self.subframe, width=60)        
+        self.scrollable_body = Scrollable(self.subframe, width=30)        
         self.filtered_data=filter_function(A.GetList(),"","","")
         for f_data in self.filtered_data:
             dtime = f_data[2].split()
@@ -196,23 +198,52 @@ class reserve_room(Frame):
             #return reaponse.text
 
 class cancel_room(Frame):
-
+    def cancel_data(self,a,b,c,d):
+        datadic ={}
+        datadic['Data']=[]
+        datadic['Data'].append({"room":a,"date":c,"time":d})
+        A.SendCancel(datadic)
+        print(a+" "+b+" "+c+" "+d)
+        print(datadic)
+        for widget in self.scrollable_body.winfo_children():
+            widget.destroy()
+        filtered_data=filter_function(A.GetList(),"","ton1234","")
+        for f_data in filtered_data:
+            dtime = f_data[2].split()
+            data = []
+            a=(f_data[0])
+            b=(f_data[1])
+            c=(dtime[0])
+            d=(dtime[1])
+            text = "\n ห้อง \t: "+f_data[0]+"\t\t\t\t\t\t\n"+"วัน/เดือน/ปี\t: "+dtime[0]+" "+"\t\t\t\t\t\t\n"+" เวลา \t: "+ dtime[1] +"\n"+" ผู้จอง \t: "+ f_data[1] +"\n"
+            Button(self.scrollable_body,text = text,bg='#F73859', justify=LEFT,anchor = 'w',command = lambda a=a,b=b,c=c,d=d:self.cancel_data(a,b,c,d)).grid(sticky="WE")
+        self.scrollable_body.update()
+        print("DONE")
     def __init__(self, parent, controller):
         Frame.__init__(self,parent,width=500, height=400, bd=1, relief=SUNKEN)
         self.controller = controller
         labelfont = ('times', 20, 'bold')
         labelfont1 = ('times', 10)
         #Button(mainFrame1, text='จองห้อง',relief="flat",padx=9).pack(side=TOP, padx=5)
-        label = Label(self, text='ห้องที่จองไว้',font=labelfont);
+        label = Label(self, text='ยกเลิกห้องที่จองไว้',font=labelfont)
         label.place(x=10,y=10)
-        EiB=Button(self, text='ยกเลิกห้อง',relief="flat",padx=9,pady=20)#.pack(side=TOP, padx=10,pady=10)
-        EiB.place(x=350,y=70)
-        label1 = Label(self, text='ห้อง',font=labelfont1);
-        label1.place(x=100,y=50)
-        label2 = Label(self, text='วัน',font=labelfont1);
-        label2.place(x=100,y=70)
-        label3 = Label(self, text='เวลา',font=labelfont1);
-        label3.place(x=100,y=90)
+        #show
+        self.subframe = Frame(self,bg = "#283149",relief=SUNKEN)
+        self.subframe.place(x=15,y=90)
+
+        self.scrollable_body = Scrollable(self.subframe, width=30)        
+        self.filtered_data=filter_function(A.GetList(),"","ton1234","")
+        i =0
+        for f_data in self.filtered_data:
+            dtime = f_data[2].split()
+            data = []
+            a=(f_data[0])
+            b=(f_data[1])
+            c=(dtime[0])
+            d=(dtime[1])
+            text = "\n ห้อง \t: "+f_data[0]+"\t\t\t\t\t\t\n"+"วัน/เดือน/ปี\t: "+dtime[0]+" "+"\t\t\t\t\t\t\n"+" เวลา \t: "+ dtime[1] +"\n"+" ผู้จอง \t: "+ f_data[1] +"\n"
+            Button(self.scrollable_body,text = text,bg='#F73859', justify=LEFT,anchor = 'w',command = lambda a=a,b=b,c=c,d=d:self.cancel_data(a,b,c,d)).grid(sticky="WE")
+        self.scrollable_body.update()
 
 
 def filter_function(Jdata,room,user,date):
@@ -270,7 +301,8 @@ def filter_function(Jdata,room,user,date):
                                 dataroom=[]
                                 
                         else:
-                            dataroom.append(scheduleroom['Data_Time'])
+                            Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                            dataroom.append(Date_Time)
                             allroom.append(dataroom)
                             dataroom=[]
                         dataroom=[]
