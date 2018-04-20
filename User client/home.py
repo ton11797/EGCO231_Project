@@ -1,5 +1,6 @@
 from tkinter import ttk
 from tkinter import *
+import tkinter as tk
 from tkcalendar import Calendar, DateEntry
 import json
 import api
@@ -34,22 +35,55 @@ class home(Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
+##########################################################################
+class Scrollable(ttk.Frame):
+
+    def __init__(self, frame, width=16):
+        scrollbar = tk.Scrollbar(frame,width=width)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, expand=False)
+
+        self.canvas = tk.Canvas(frame,bg = "#283149",yscrollcommand=scrollbar.set)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar.config(command=self.canvas.yview)
+
+        self.canvas.bind('<Configure>', self.__fill_canvas)
+
+        # base class initialization
+        tk.Frame.__init__(self, frame,bg = "#283149")         
+
+        # assign this obj (the inner frame) to the windows item of the canvas
+        self.windows_item = self.canvas.create_window(0,0, window=self,anchor=tk.NW)
+
+
+    def __fill_canvas(self, event):
+        "Enlarge the windows item to the canvas width"
+
+        canvas_width = event.width
+        self.canvas.itemconfig(self.windows_item, width = canvas_width)        
+
+    def update(self):
+        "Update the canvas and the scrollregion"
+        self.update_idletasks()
+        self.canvas.config(scrollregion=self.canvas.bbox(self.windows_item))
+################################################################################################        
+
 class search_room(Frame):
 
     def search_list_room(self,room,day,month,year,time,list_time):
-        self.canvas.delete("1.0",END)
+        for widget in self.scrollable_body.winfo_children():
+            widget.destroy()
+        
         date = (day.get()+"/"+str(month.current())+"/"+year.get())
         check = [day.get(),str(month.current()),year.get()]
         if '' in check:
             date = ''
         filtered_data=filter_function(A.GetList(),room.get(),"",date)
-
         for f_data in filtered_data:
-            a = 80
             dtime = f_data[2].split()
-            text = "\n ห้อง \t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา \t: "+ dtime[1] +"\n"+" ผู้จอง \t: "+ f_data[1] +"\n"
-            self.canvas.insert(END,text)
-            #Button(self.textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
+            text = "\n ห้อง \t: "+f_data[0]+"\n"+"วัน/เดือน/ปี\t: "+dtime[0]+" "+"\t\t\t\t\t\t\n"+" เวลา \t: "+ dtime[1] +"\n"+" ผู้จอง \t: "+ f_data[1] +"\n"
+            Button(self.scrollable_body,text = text,bg='#F73859', justify=LEFT,anchor = 'w',relief=SUNKEN).grid(sticky="WE")
+        self.scrollable_body.update()
 
     def __init__(self, parent, controller):
         Frame.__init__(self,parent,width=500, height=400, bd=1, relief=SUNKEN)
@@ -82,42 +116,17 @@ class search_room(Frame):
         time.current(0)
         Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
         #show
-        #self.textarea = Frame(self,background='#283149')
-        #self.textarea.place(x=15,y=90)
-        #self.scrollbar = Scrollbar(self.textarea,orient= VERTICAL)
-
-        self.subframe = Frame(self,height=300, width= 460)
+        self.subframe = Frame(self,bg = "#283149",relief=SUNKEN)
         self.subframe.place(x=15,y=90)
 
-        self.canvas = Canvas(self.subframe,height=300, width= 460,bg='#283149',scrollregion=(0,0,500,500))
-        #self.canvas.place(x=15,y=90)
-        vbar=Scrollbar(self.subframe,orient=VERTICAL)
-        vbar.pack(side=RIGHT,fill=Y)
-        
-        vbar.config(command=self.canvas.yview)
-        self.canvas.config(yscrollcommand=vbar.set)
-        self.canvas.pack(side=LEFT,expand=True,fill=BOTH)
-        
-        #self.scrollbar.config(command = self.canvas.yview)
-
-        #pack
-        #self.scrollbar.pack(side= RIGHT, fill= Y,  expand= FALSE)
-        #self.canvas.pack(side= LEFT, padx=2, pady=2,fill= BOTH, expand= TRUE)
-
+        self.scrollable_body = Scrollable(self.subframe, width=60)        
         self.filtered_data=filter_function(A.GetList(),"","","")
-        space = 0
         for f_data in self.filtered_data:
             dtime = f_data[2].split()
-            text = "\n ห้อง \t: "+f_data[0]+"\n"+"วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา \t: "+ dtime[1] +"\n"+" ผู้จอง \t: "+ f_data[1] +"\n"
-            lb = Button(self.canvas,text = text, borderwidth=3, relief="groove",background='#FEF2BF', justify=LEFT,anchor = 'w')
-            lb.place(x=17,y=20 + space,width=430)
-            space +=110
-
-        # scrollbar = Scrollbar( self.canvas )
-        # scrollbar.place( x=30,y=90 )
-        # scrollbar.config( command = self.canvas.yview )
+            text = "\n ห้อง \t: "+f_data[0]+"\t\t\t\t\t\t\n"+"วัน/เดือน/ปี\t: "+dtime[0]+" "+"\t\t\t\t\t\t\n"+" เวลา \t: "+ dtime[1] +"\n"+" ผู้จอง \t: "+ f_data[1] +"\n"
+            Button(self.scrollable_body,text = text,bg='#F73859', justify=LEFT,anchor = 'w').grid(sticky="WE")
         
-
+        self.scrollable_body.update()
 
 
 
