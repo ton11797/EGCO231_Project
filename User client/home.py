@@ -1,6 +1,5 @@
 from tkinter import ttk
 from tkinter import *
-from tkinter import ttk
 from tkcalendar import Calendar, DateEntry
 import json
 import api
@@ -38,7 +37,7 @@ class home(Tk):
 class search_room(Frame):
 
     def search_list_room(self,room,day,month,year,time,list_time):
-        self.textarea.delete("1.0",END)
+        self.canvas.delete("1.0",END)
         date = (day.get()+"/"+str(month.current())+"/"+year.get())
         check = [day.get(),str(month.current()),year.get()]
         if '' in check:
@@ -48,8 +47,8 @@ class search_room(Frame):
         for f_data in filtered_data:
             a = 80
             dtime = f_data[2].split()
-            text = "\n ห้อง \t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา \t: "+ dtime[1] +"\n"+"------------------------------------------------------------\n"
-            self.textarea.insert(END,text)
+            text = "\n ห้อง \t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา \t: "+ dtime[1] +"\n"+" ผู้จอง \t: "+ f_data[1] +"\n"
+            self.canvas.insert(END,text)
             #Button(self.textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
 
     def __init__(self, parent, controller):
@@ -83,36 +82,42 @@ class search_room(Frame):
         time.current(0)
         Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
         #show
-        # self.textarea = Text(self, height=18, width=60,background='skyblue')
-        # self.scrollbar = Scrollbar(self.textarea)
-        # self.scrollbar.place(x=463,y=0,height=290)
-        # self.textarea.place(x=5,y=90)
-        # self.textarea.config(yscrollcommand=self.scrollbar.set)
-        # self.scrollbar.config(command=self.textarea.yview)
+        #self.textarea = Frame(self,background='#283149')
+        #self.textarea.place(x=15,y=90)
+        #self.scrollbar = Scrollbar(self.textarea,orient= VERTICAL)
 
-        # self.filtered_data=filter_function(A.GetList(),"","","")
+        self.subframe = Frame(self,height=300, width= 460)
+        self.subframe.place(x=15,y=90)
 
-        # for f_data in self.filtered_data:
-        #     a = 80
-        #     dtime = f_data[2].split()
-        #     text = "\n ห้อง\t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา\t: "+ dtime[1] +"\n"+"------------------------------------------------------------\n"
-        #     self.textarea.insert(END,text)
-        #     #Button(self.textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
-        self.textarea = Frame(self, height=500, width=465,background='#283149')
-        self.textarea.place(x=15,y=90)
-        # self.scrollbar = Scrollbar(self.textarea,orient= VERTICAL, command=self.textarea.yview)
-        # self.textarea.config(yscrollcommand=self.scrollbar.set)
-        # self.scrollbar.config(command=self.textarea.yview)
+        self.canvas = Canvas(self.subframe,height=300, width= 460,bg='#283149',scrollregion=(0,0,500,500))
+        #self.canvas.place(x=15,y=90)
+        vbar=Scrollbar(self.subframe,orient=VERTICAL)
+        vbar.pack(side=RIGHT,fill=Y)
+        
+        vbar.config(command=self.canvas.yview)
+        self.canvas.config(yscrollcommand=vbar.set)
+        self.canvas.pack(side=LEFT,expand=True,fill=BOTH)
+        
+        #self.scrollbar.config(command = self.canvas.yview)
 
+        #pack
+        #self.scrollbar.pack(side= RIGHT, fill= Y,  expand= FALSE)
+        #self.canvas.pack(side= LEFT, padx=2, pady=2,fill= BOTH, expand= TRUE)
 
         self.filtered_data=filter_function(A.GetList(),"","","")
         space = 0
         for f_data in self.filtered_data:
             dtime = f_data[2].split()
-            text = "\n ห้อง\t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา\t: "+ dtime[1] +"\n"+"------------------------------------------------------------\n"
-            lb = Label(self.textarea,text = text, borderwidth=3,width=60, relief="groove",background='#FEF2BF')
-            lb.place(x=17,y=20 + space)
+            text = "\n ห้อง \t: "+f_data[0]+"\n"+"วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา \t: "+ dtime[1] +"\n"+" ผู้จอง \t: "+ f_data[1] +"\n"
+            lb = Button(self.canvas,text = text, borderwidth=3, relief="groove",background='#FEF2BF', justify=LEFT,anchor = 'w')
+            lb.place(x=17,y=20 + space,width=430)
             space +=110
+
+        # scrollbar = Scrollbar( self.canvas )
+        # scrollbar.place( x=30,y=90 )
+        # scrollbar.config( command = self.canvas.yview )
+        
+
 
 
 
