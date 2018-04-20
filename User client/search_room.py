@@ -13,15 +13,15 @@ class home(Tk):
         mainFrame.pack(side=LEFT,expand=1, pady=10, padx=5)
         
     def search_list_room(self,mainFrame,combo1,combo2,combo3,combo4,combo5):
-        label1 = Label(mainFrame,text = "ห้อง = "+combo1.get())
+        label1 = Label(mainFrame,text = "ห้อง55 = "+combo1.get())
         label1.place(x=5,y=90)
-        label2 = Label(mainFrame,text = "วัน = "+combo2.get())
+        label2 = Label(mainFrame,text = "วัน55 = "+combo2.get())
         label2.place(x=5,y=110)
-        label3 = Label(mainFrame,text = "เดือน = "+combo3.get())
+        label3 = Label(mainFrame,text = "เดือน55 = "+combo3.get())
         label3.place(x=5,y=130)
-        label4 = Label(mainFrame,text = "ปี = "+combo4.get())
+        label4 = Label(mainFrame,text = "ปี55 = "+combo4.get())
         label4.place(x=5,y=150)
-        label5 = Label(mainFrame,text = "เวลา = "+combo5.get())
+        label5 = Label(mainFrame,text = "เวลา55 = "+combo5.get())
         label5.place(x=5,y=170)
         
         print(combo1.get()+"  ")
@@ -49,7 +49,7 @@ class home(Tk):
         combo1['value'] = ('R231')
         #วัน
         i = 0
-        day  = list();
+        day  = list()
         while (i < 31):
             day.append(i+1)
             i = i + 1

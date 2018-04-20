@@ -1,7 +1,10 @@
+from tkinter import ttk
 from tkinter import *
 from tkinter import ttk
 from tkcalendar import Calendar, DateEntry
 import json
+import api
+A = api.API_cen()
 
 class home(Tk):
 
@@ -18,7 +21,7 @@ class home(Tk):
             self.frames[page_name] = frame
             frame.grid(row=0,column=1,rowspan=10)
         Button(menuList, text='จองห้อง',relief="flat",padx=39,command=lambda :self.show_frame("reserve_room")).pack(side=TOP, padx=5)
-        Button(menuList, text='ตรวจสอบห้องว่าง',relief="flat",padx=19,command=lambda :self.show_frame("search_room")).pack(side=TOP, padx=5)
+        Button(menuList, text='ตรวจสอบห้อง',relief="flat",padx=19,command=lambda :self.show_frame("search_room")).pack(side=TOP, padx=5)
         Button(menuList, text='ยกเลิกการจอง',relief="flat",padx=20,command=lambda :self.show_frame("cancel_room")).pack(side=TOP, padx=5)
         menuList.grid( row=0,column=0,pady=10, padx=5)
         self.show_frame("reserve_room")
@@ -35,37 +38,19 @@ class home(Tk):
 class search_room(Frame):
 
     def search_list_room(self,room,day,month,year,time,list_time):
-        textarea = Text(self, height=18, width=60,background='skyblue')
-        scrollbar = Scrollbar(textarea)
-        scrollbar.place(x=463,y=0,height=290)
-        textarea.place(x=5,y=90)
-        textarea.config(yscrollcommand=scrollbar.set)
-        scrollbar.config(command=textarea.yview)
-        if day.get()!= 1 and month.get()!= '-' and year.get()!= 2561:#must choose dd/mm/yy
-            if room.get()!='-' and time.get()!='-':
-                text = "\n ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()+"\n"+"------------------------------------------------------------\n"
-                textarea.insert(END,text)
-                #Button(textarea,text='จองห้อง',padx=30).place(x=200,y=30)
+        self.textarea.delete("1.0",END)
+        date = (day.get()+"/"+str(month.current())+"/"+year.get())
+        check = [day.get(),str(month.current()),year.get()]
+        if '' in check:
+            date = ''
+        filtered_data=filter_function(A.GetList(),room.get(),"",date)
 
-            elif(room.get()!='-'):
-                a = 80
-                for i in range(1,len(time['value'])):
-                    text = "\n ห้อง = "+room.get()+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][i]+"\n"+"------------------------------------------------------------\n"
-                    textarea.insert(END,text)
-                    #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
-            elif(time.get()!= '-'):
-                a = 80
-                for i in range(1,len(room['value'])):
-                    text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time.get()+"\n"+"------------------------------------------------------------\n"
-                    textarea.insert(END,text)
-                    #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
-            else :
-                a =80
-                for i in range(1,len(room['value'])):
-                    for j in range(1,len(time['value'])):
-                        text = "\n ห้อง = "+room['value'][i]+"\n"+" วัน/เดือน/ปี="+day.get()+" "+month.get()+" "+year.get()+"\n"+" เวลา = "+time['value'][j]+"\n"+"------------------------------------------------------------\n"
-                        textarea.insert(END,text)
-                        #Button(textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(j-1)))
+        for f_data in filtered_data:
+            a = 80
+            dtime = f_data[2].split()
+            text = "\n ห้อง\t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา\t: "+ dtime[1] +"\n"+"------------------------------------------------------------\n"
+            self.textarea.insert(END,text)
+            #Button(self.textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
 
     def __init__(self, parent, controller):
         Frame.__init__(self,parent,width=500, height=400, bd=1, relief=SUNKEN)
@@ -74,44 +59,45 @@ class search_room(Frame):
         #ห้อง
         room = ttk.Combobox(self,width=5,state='readonly')
         room.place(x=35,y=10)
-        room['value'] = ('-','6272','6273','6274')
+        room['value'] = ('','6272','6273','6274')
         room.current(0)
         #วัน
         day = ttk.Combobox(self,width=5,state='readonly')
         day.place(x=115,y=10)
-        day['value'] =['-']+ [i for i in range(1,32)]
+        day['value'] =['']+ [i for i in range(1,32)]
         day.current(0)
         #เดือน
         month = ttk.Combobox(self,width=10,state='readonly')
         month.place(x=205,y=10)
-        month['value'] = ('-','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม')
+        month['value'] = ('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม')
         month.current(0)
         #ปี
         year = ttk.Combobox(self,width=5,state='readonly')
         year.place(x=310,y=10)
-        year['value'] =['-']+[i for i in range(2561,2571)]
+        year['value'] =['']+[i for i in range(2561,2571)]
         year.current(0)
         #เวลา
-        list_time = ['-','07.00-08.00','08.00-09.00','09.00-10.00','10.00-11.00','11.00-12.00','13.00-14.00','14.00-15.00','15.00-16.00','16.00-17.00','17.00-18.00','18.00-19.00','19.00-20.00','20.00-21.00','21.00-22.00']
+        list_time = ['','07.00-08.00','08.00-09.00','09.00-10.00','10.00-11.00','11.00-12.00','13.00-14.00','14.00-15.00','15.00-16.00','16.00-17.00','17.00-18.00','18.00-19.00','19.00-20.00','20.00-21.00','21.00-22.00']
         time = ttk.Combobox(self,width=10,value = list_time,state='readonly')
         time.place(x=400,y=10)
         time.current(0)
         Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
+        #show
+        self.textarea = Text(self, height=18, width=60,background='skyblue')
+        self.scrollbar = Scrollbar(self.textarea)
+        self.scrollbar.place(x=463,y=0,height=290)
+        self.textarea.place(x=5,y=90)
+        self.textarea.config(yscrollcommand=self.scrollbar.set)
+        self.scrollbar.config(command=self.textarea.yview)
 
-    # def search_list_room(self,room,day,month,year,time,list_time):
-    #     #filtered_data=filter_function(raw_data,room=room,date=day+month+year)
+        self.filtered_data=filter_function(A.GetList(),"","","")
 
-    #     data = json.load(open('input.json'))
-
-
-    #     roomlist_frame= Frame(self,height=310, width=490,background='skyblue')
-    #     roomlist_frame.place(x=5,y=90)
-
-    #     scrollbar = Scrollbar(roomlist_frame)
-    #     scrollbar.place(x=475,y=0,height=310)
-
-    #     for room in data["available-room"]:
-    #         room_name = room["Room"]
+        for f_data in self.filtered_data:
+            a = 80
+            dtime = f_data[2].split()
+            text = "\n ห้อง\t: "+f_data[0]+"\n"+" วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา\t: "+ dtime[1] +"\n"+"------------------------------------------------------------\n"
+            self.textarea.insert(END,text)
+            #Button(self.textarea, text='จองห้อง',padx=30).place(x=200,y=30+(a*(i-1)))
 
 
 
@@ -210,69 +196,70 @@ def filter_function(Jdata,room,user,date):
     allroom=[]
     for aroom in data['available-room']:
         if(room!=""):
-            if(room==aroom['Room']):
+            if(room==aroom['room']):            
                 for scheduleroom in aroom['schedule']:
-                    dataroom.append(aroom['Room'])
+                    dataroom.append(aroom['room'])
                     if(user!=""):
-                        if(user==scheduleroom['Username']):
-                            dataroom.append(scheduleroom['Username'])
+                        if(user==scheduleroom['username']):
+                            dataroom.append(scheduleroom['username'])
                             if(date!=""):
-                                for word in scheduleroom['Data Time'].split():
-                                    if(word==date):
-                                        dataroom.append(scheduleroom['Data Time'])
-                                        allroom.append(dataroom)
-                                        dataroom=[]
-
+                                if date == scheduleroom['date']:
+                                    Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                    dataroom.append(Date_Time)
+                                    allroom.append(dataroom)
+                                    dataroom=[]
+                                
                             else:
-
-                                dataroom.append(scheduleroom['Data Time'])
+                                Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                dataroom.append(Date_Time)
                                 allroom.append(dataroom)
                                 dataroom=[]
                             dataroom=[]
                     else:
-                        dataroom.append(scheduleroom['Username'])
+                        dataroom.append(scheduleroom['username'])
                         if(date!=""):
-                            for word in scheduleroom['Data Time'].split():
-                                if(word==date):
-                                    dataroom.append(scheduleroom['Data Time'])
-                                    allroom.append(dataroom)
-                                    dataroom=[]
+                            if date == scheduleroom['date']:
+                                Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                dataroom.append(Date_Time)
+                                allroom.append(dataroom)
+                                dataroom=[]
                         else:
-                            dataroom.append(scheduleroom['Data Time'])
+                            Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                            dataroom.append(Date_Time)
                             allroom.append(dataroom)
                             dataroom=[]
                         dataroom=[]
                     dataroom=[]
         else:
-
+        
             for scheduleroom in aroom['schedule']:
-                dataroom.append(aroom['Room'])
+                dataroom.append(aroom['room'])
                 if(user!=""):
-                    if(user==scheduleroom['Username']):
-                        dataroom.append(scheduleroom['Username'])
+                    if(user==scheduleroom['username']):
+                        dataroom.append(scheduleroom['username'])
                         if(date!=""):
-                            for word in scheduleroom['Data Time'].split():
-                                if(word==date):
-                                    dataroom.append(scheduleroom['Data Time'])
-                                    allroom.append(dataroom)
-                                    dataroom=[]
-
+                            if date == scheduleroom['date']:
+                                Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                dataroom.append(Date_Time)
+                                allroom.append(dataroom)
+                                dataroom=[]
+                                
                         else:
-
-                            dataroom.append(scheduleroom['Data Time'])
+                            dataroom.append(scheduleroom['Data_Time'])
                             allroom.append(dataroom)
                             dataroom=[]
                         dataroom=[]
                 else:
-                    dataroom.append(scheduleroom['Username'])
+                    dataroom.append(scheduleroom['username'])
                     if(date!=""):
-                        for word in scheduleroom['Data Time'].split():
-                            if(word==date):
-                                dataroom.append(scheduleroom['Data Time'])
+                            if date == scheduleroom['date']:
+                                Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                                dataroom.append(Date_Time)
                                 allroom.append(dataroom)
                                 dataroom=[]
                     else:
-                        dataroom.append(scheduleroom['Data Time'])
+                        Date_Time = (scheduleroom['date'] +" "+scheduleroom['time'])
+                        dataroom.append(Date_Time)
                         allroom.append(dataroom)
                         dataroom=[]
                     dataroom=[]

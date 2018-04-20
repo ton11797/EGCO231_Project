@@ -76,7 +76,7 @@ class API_cen():
     
     def get_user(self):
         return self.username
-# A = API_cen()
+A = API_cen()
 # data ={
 #     "Data":[
 #       { 
@@ -101,7 +101,7 @@ class API_cen():
 
 # print(A.SendCanpcel(data))
 # print(A.SendCancel(data))
-# print(A.SendRegister("ton123","1234"))
+#print(A.SendRegister("ton123","1234"))
 # print(A.SendLogin("ton123","1234"))
-# print(A.get_user())
+# print(A.GetList())
 # A=getipfromfile("config.txt")

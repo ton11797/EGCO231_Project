@@ -1,25 +1,22 @@
-
 {
-  "available-room": [
-    {
-      "Room" : "6272",
-      "schedule" : [
-        {
-          "Username":"narit",
-          "Data_Time":"25/4/2561 12:00-16:00"
-        },
-        {
-          "Username":"narit",
-          "Data Time":"28/4/2561 12:00-16:00"
-        }]
-    },
-    {
-      "Room" : "6273",
-      "schedule" : []
-    },
-    {
-      "Room" : "6274",
-      "schedule" : []
-    }
-  ]
-}
+    "Data":[
+      { 
+        "room":"6275",
+        "date":"4/2/61",
+        "time":"08:00-11:00"
+      },
+      { 
+        "room":"6275",
+        "date":"4/2/61",
+        "time":"10:00-11:00"
+      },
+      { 
+        "room":"6275",
+        "date":"5/2/61",
+        "time":"11:00-13:00"
+      }
+      
+    ],
+    "cookie_session":"X6OP9B3TjhXd1GyXI1u22bC0snEXTKQ10402044846"
+  }
+  
