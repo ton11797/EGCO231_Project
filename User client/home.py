@@ -98,20 +98,20 @@ class search_room(Frame):
         time.current(0)
         Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
 
-    def search_list_room(self,room,day,month,year,time,list_time):
-        #filtered_data=filter_function(raw_data,room=room,date=day+month+year)
+    # def search_list_room(self,room,day,month,year,time,list_time):
+    #     #filtered_data=filter_function(raw_data,room=room,date=day+month+year)
 
-        data = json.load(open('input.json'))
+    #     data = json.load(open('input.json'))
 
 
-        roomlist_frame= Frame(self,height=310, width=490,background='skyblue')
-        roomlist_frame.place(x=5,y=90)
+    #     roomlist_frame= Frame(self,height=310, width=490,background='skyblue')
+    #     roomlist_frame.place(x=5,y=90)
 
-        scrollbar = Scrollbar(roomlist_frame)
-        scrollbar.place(x=475,y=0,height=310)
+    #     scrollbar = Scrollbar(roomlist_frame)
+    #     scrollbar.place(x=475,y=0,height=310)
 
-        for room in data["available-room"]:
-            room_name = room["Room"]
+    #     for room in data["available-room"]:
+    #         room_name = room["Room"]
 
 
 
