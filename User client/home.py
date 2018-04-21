@@ -6,7 +6,6 @@ import json
 import api
 import time
 A = api.API_cen()
-A.SendLogin("ton1234","ton1234")
 A.read_login()
 class home(Tk):
 
@@ -156,15 +155,6 @@ class reserve_room(Frame):
         Label(self,text="เลือกวัน").place(x=80,y=100)
         date = Calendar(self,width=20,height=100)
         date.place(x=80,y=130)
-
-
-
-
-
-
-
-
-
         Button(self,text='ยืนยัน',command=lambda : self.Book(room,begin_time,end_time,date)).place(x=80,y=330)
         Button(self,text='ล้างข้อมูล',command=lambda :self.Clear(room,begin_time,end_time,date)).place(x=180,y=330)
 
@@ -203,7 +193,7 @@ class cancel_room(Frame):
         print("cal")
         for widget in self.scrollable_body.winfo_children():
             widget.destroy()
-        filtered_data=filter_function(A.GetList(),"","ton1234","")
+        filtered_data=filter_function(A.GetList(),"",A.get_user(),"")
         for f_data in filtered_data:
             dtime = f_data[2].split()
             data = []
@@ -223,7 +213,7 @@ class cancel_room(Frame):
         print(datadic)
         for widget in self.scrollable_body.winfo_children():
             widget.destroy()
-        filtered_data=filter_function(A.GetList(),"","ton1234","")
+        filtered_data=filter_function(A.GetList(),"",A.get_user(),"")
         for f_data in filtered_data:
             dtime = f_data[2].split()
             data = []
@@ -249,7 +239,7 @@ class cancel_room(Frame):
         self.subframe.place(x=15,y=90)
 
         self.scrollable_body = Scrollable(self.subframe, width=30)        
-        self.filtered_data=filter_function(A.GetList(),"","ton1234","")
+        self.filtered_data=filter_function(A.GetList(),"",A.get_user(),"")
         i =0
         for f_data in self.filtered_data:
             dtime = f_data[2].split()

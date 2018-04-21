@@ -1,270 +1,88 @@
-<<<<<<< HEAD
+
 from tkinter import *
 import tkinter.messagebox as tm
+from tkinter import *
+from tkinter import ttk
 import api
-def post_login(login):
-    #respond = {"status":"fail","error":login['username']+login['password']}
-    A=api.getipfromfile("config.txt")
-    respond = api.SendLogin(login['username'],api.hash_password(login['password']),A)
-    print(respond)
-    return respond
+import json
+A = api.API_cen()
 
-def post_regis(login):
-    # respond = {"status":"fail","error":login['username']+login['password']}
-    A=api.getipfromfile("config.txt")
-    respond = api.SendRegister(login['username'],api.hash_password(login['password']),A)
-    print(respond)
-    return respond
+class login(Tk):
 
-class LoginFrame(Frame):
-    def __init__(self, master):
-        super().__init__(master)
-        
-        self.frame = Frame(self,padx=100,pady=100)
-        self.frame.pack()
+    def __init__(self):
+        Tk.__init__(self)
+        frame=Frame(self)
 
-        self.label_title = Label(self.frame, text="LOG IN\n")
-        self.label_title.grid(row=0, column=1, sticky=W)
-        
-        self.label_username = Label(self.frame, text="Username")
-        self.label_password = Label(self.frame, text="Password")
 
-        self.entry_username = Entry(self.frame)
-        self.entry_password = Entry(self.frame, show="*")
+        self.notebook = ttk.Notebook(frame)
 
-        self.label_username.grid(row=1, sticky=E)
-        self.label_password.grid(row=2, sticky=E)
+
+        self.login_frame = Frame(frame, padx=100, pady=100)
+        Label(self.login_frame, text="LOG IN\n").grid(row=0, column=1, sticky=W)
+        Label(self.login_frame, text="Username").grid(row=1, sticky=E)
+        Label(self.login_frame, text="Password").grid(row=2, sticky=E)
+        self.entry_username = Entry(self.login_frame)
         self.entry_username.grid(row=1, column=1)
+        self.entry_password = Entry(self.login_frame, show="*")
         self.entry_password.grid(row=2, column=1)
+        Checkbutton(self.login_frame, text="Keep me logged in").grid(columnspan=2)
+        Button(self.login_frame, text="Login",command=self._login_btn_clicked).grid(row=4,column=0,columnspan=2)
 
-        self.checkbox = Checkbutton(self.frame, text="Keep me logged in")
-        self.checkbox.grid(columnspan=2)
+        self.signup_frame = Frame(frame,padx=100,pady=100)
+        Label(self.signup_frame, text="SIGN UP\n").grid(row=0, column=0, sticky=W)
+        Label(self.signup_frame, text="New Username: ").grid(row=1, column=0, sticky=W)
+        Label(self.signup_frame, text="New Password: ").grid(row=2, column=0, sticky=W)
+        self.entry_usernames = Entry(self.signup_frame)
+        self.entry_usernames.grid(row=1, column=1)
+        self.entry_passwords = Entry(self.signup_frame, show='*')
+        self.entry_passwords.grid(row=2, column=1)
+        Button(self.signup_frame, text="Signup",command=self._register_btn_clicked).grid(row=4,column=0,columnspan=2)
 
-        self.logbtn = Button(self.frame, text="Login", command=self._login_btn_clicked)
-        self.logbtn.grid(row=4,column=0)
-
-        self.logbtn = Button(self.frame, text="Sign up", command=self._signup_btn_clicked)
-        self.logbtn.grid(row=4,column=1)
 
 
-        self.pack()
+        self.notebook.add(self.login_frame, text="login")
+        self.notebook.add(self.signup_frame, text="sign up")
 
+        self.notebook.pack()
+        frame.pack()
+        self.mainloop()
+
+    def _register_btn_clicked(self):
+        username = self.entry_usernames.get()
+        password = self.entry_passwords.get()
+        
+        status = self.regischeck(username,password)
+        print(status)
+        if (status==True):
+            tm.showinfo("Regis info", "Done")
+        else:
+            tm.showerror("Regis error", status)
     def _login_btn_clicked(self):
         # print("Clicked")
         username = self.entry_username.get()
         password = self.entry_password.get()
 
-        self.logincheck(username,password)
-
         # print(username, password)
         status = self.logincheck(username,password)
         print(status)
         if (status==True):
-            tm.showinfo("Login info", "Welcome Fon")
+            tm.showinfo("Login info", "Welcome")
+            self.destroy()
         else:
             tm.showerror("Login error", status)
-            
-    def _add_signup_btn_clicked(self):
-        # print("Clicked")
-        username = self.entry_newusername.get()
-        password = self.entry_newpassword.get()
-
-        self.regischeck(username,password)
-
-        # print(username, password)
-        status = self.regischeck(username,password)
-        print(status)
-        if (status==True):
-            tm.showinfo("Sign Up info", "Welcome :)")
-        else:
-            tm.showerror("Sign Up error", status)
-
-
-    def _signup_btn_clicked(self):
-        # print("Clicked")
-        self.frame.destroy()
-
-        self.frame = Frame(self,padx=100,pady=100)
-        self.frame.pack()
         
-        self.label_title = Label(self.frame, text="SIGN UP\n")
-        self.label_title.grid(row=0, column=0, sticky=W)
- 
-        self.label_newusername = Label(self.frame, text="New Username: ")
-        self.label_newpassword = Label(self.frame, text="New Password: ")
-        self.label_newusername.grid(row=1, column=0, sticky=W)
-        self.label_newpassword.grid(row=2, column=0, sticky=W)
- 
-        self.entry_newusername = Entry(self.frame)
-        self.entry_newpassword = Entry(self.frame, show='*')
-        self.entry_newusername.grid(row=1, column=1)
-        self.entry_newpassword.grid(row=2, column=1)
- 
-        self.signbtn = Button(self.frame, text="Signup",command = self._add_signup_btn_clicked)
-        self.signbtn.grid(columnspan=3, sticky=W)
-                              
-        self.pack()
-        
+
     def regischeck(self,username,password):
-        regis = { }
-        regis["username"] = username
-        regis["password"] = password 
-        response = post_regis(regis)
-        print(response)
-        if(response['status']=="success"):
-            # root.destroy
+        respond = json.loads(A.SendRegister(username,password))
+        if respond['status']=="sucess":
             return True
-        else:
-            return response['error']
+        return respond['error']
 
     def logincheck(self,username,password):
-        login = { }
-        login["username"] = username
-        login["password"] = password
-        response = post_login(login)
-        print(response)
-        if(response['status']=="success"):
-            root.destroy
+        resopod = json.loads(A.SendLogin(username,password))
+        if resopod['status']=="sucess":
             return True
-        else:
-            return response['error']
+        return resopod['error']
 
-
-
-root = Tk()
-lf = LoginFrame(root)
-root.mainloop()
-=======
-from tkinter import *
-import tkinter.messagebox as tm
-
-def post_login(login):
-    #respond = {"status":"fail","error":login['username']+login['password']}
-
-    respond = {"status":"success","error":login['username']+login['password']}
-    return respond
-
-def post_regis(login):
-    respond = {"status":"fail","error":login['username']+login['password']}
-    #respond = {"status":"success","error":login['username']+login['password']}
-    return respond
-
-class LoginFrame(Frame):
-    def __init__(self, master):
-        super().__init__(master)
-        
-        self.frame = Frame(self,padx=100,pady=100)
-        self.frame.pack()
-
-        self.label_title = Label(self.frame, text="LOG IN\n")
-        self.label_title.grid(row=0, column=1, sticky=W)
-        
-        self.label_username = Label(self.frame, text="Username")
-        self.label_password = Label(self.frame, text="Password")
-
-        self.entry_username = Entry(self.frame)
-        self.entry_password = Entry(self.frame, show="*")
-
-        self.label_username.grid(row=1, sticky=E)
-        self.label_password.grid(row=2, sticky=E)
-        self.entry_username.grid(row=1, column=1)
-        self.entry_password.grid(row=2, column=1)
-
-        self.checkbox = Checkbutton(self.frame, text="Keep me logged in")
-        self.checkbox.grid(columnspan=2)
-
-        self.logbtn = Button(self.frame, text="Login", command=self._login_btn_clicked)
-        self.logbtn.grid(row=4,column=0)
-
-        self.logbtn = Button(self.frame, text="Sign up", command=self._signup_btn_clicked)
-        self.logbtn.grid(row=4,column=1)
-
-
-        self.pack()
-
-    def _login_btn_clicked(self):
-        # print("Clicked")
-        username = self.entry_username.get()
-        password = self.entry_password.get()
-
-        self.logincheck(username,password)
-
-        # print(username, password)
-        status = self.logincheck(username,password)
-        print(status)
-        if (status==True):
-            tm.showinfo("Login info", "Welcome Fon")
-        else:
-            tm.showerror("Login error", status)
-            
-    def _add_signup_btn_clicked(self):
-        # print("Clicked")
-        username = self.entry_newusername.get()
-        password = self.entry_newpassword.get()
-
-        self.regischeck(username,password)
-
-        # print(username, password)
-        status = self.regischeck(username,password)
-        print(status)
-        if (status==True):
-            tm.showinfo("Sign Up info", "Welcome :)")
-        else:
-            tm.showerror("Sign Up error", status)
-
-
-    def _signup_btn_clicked(self):
-        # print("Clicked")
-        self.frame.destroy()
-
-        self.frame = Frame(self,padx=100,pady=100)
-        self.frame.pack()
-        
-        self.label_title = Label(self.frame, text="SIGN UP\n")
-        self.label_title.grid(row=0, column=0, sticky=W)
- 
-        self.label_newusername = Label(self.frame, text="New Username: ")
-        self.label_newpassword = Label(self.frame, text="New Password: ")
-        self.label_newusername.grid(row=1, column=0, sticky=W)
-        self.label_newpassword.grid(row=2, column=0, sticky=W)
- 
-        self.entry_newusername = Entry(self.frame)
-        self.entry_newpassword = Entry(self.frame, show='*')
-        self.entry_newusername.grid(row=1, column=1)
-        self.entry_newpassword.grid(row=2, column=1)
- 
-        self.signbtn = Button(self.frame, text="Signup",command = self._add_signup_btn_clicked)
-        self.signbtn.grid(columnspan=3, sticky=W)
-                              
-        self.pack()
-        
-    def regischeck(self,username,password):
-        regis = { }
-        regis["username"] = username
-        regis["password"] = password 
-        response = post_regis(regis)
-        print(response)
-        if(response['status']=="success"):
-            #root.destroy
-            return True
-        else:
-            return response['error']
-
-    def logincheck(self,username,password):
-        login = { }
-        login["username"] = username
-        login["password"] = password
-        response = post_login(login)
-        print(response)
-        if(response['status']=="success"):
-            root.destroy
-            return True
-        else:
-            return response['error']
-
-
-
-root = Tk()
-lf = LoginFrame(root)
-root.mainloop()
->>>>>>> Book
+if __name__ == "__main__":
+    login()
