@@ -2,6 +2,7 @@ import requests
 import json
 import uuid
 import hashlib
+from copy import copy
 class API_cen():
     def __init__(self):
         self.config = self.getipfromfile("config.txt")
@@ -23,6 +24,7 @@ class API_cen():
     def SendBook(self,DATA):
         headers = {'Content-Type': 'application/json'}
         DATA['cookie_session']=self.cookies
+        print(DATA)
         d = requests.post(self.config+"/book",headers=headers,data= json.dumps(DATA))
         return d.text
     def SendCancel(self,DATA):
@@ -50,8 +52,9 @@ class API_cen():
         file_object.close()
     def read_login(self):
         file_object  = open("tmp", "r")
-        self.username=file_object.read().strip()
-        self.cookies=file_object.read().strip()
+        a,b = file_object.read().strip().split("\n")
+        self.username=a
+        self.cookies=b
         file_object.close()
     # new_pass = input('Please enter a password: ')
     # hashed_password = hash_password(new_pass)
@@ -111,9 +114,11 @@ A = API_cen()
 #     "cookie_session":"X6OP9B3TjhXd1GyXI1u22bC0snEXTKQ10402044846"
 #   }
 
-# print(A.SendCanpcel(data))
-# print(A.SendCancel(data))
-#print(A.SendRegister("ton123","1234"))
-# print(A.SendLogin("ton123","1234"))
-# print(A.GetList())
-# A=getipfromfile("config.txt")
+
+def SendRegister(User,hashed_Pass,fileip):
+    headers = {'Content-Type': 'application/json'}
+    da={"Username":User,"Password":hashed_Pass}
+    b= requests.post(fileip+"/regis",headers=headers,data= json.dumps(da) )
+    k = b.text
+    return k
+
