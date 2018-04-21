@@ -160,7 +160,7 @@ class reserve_room(Frame):
 
     def Book(self,room,begin_time,end_time,date):
         print (date.selection_get())
-        yy,mm,dd = date.selection_get().split("-")
+        yy,mm,dd = str(date.selection_get()).split("-")
         print (dd+"/"+mm+"/"+yy)
 
         if room.get()!="" and begin_time.get()!="" and end_time.get()!="":
