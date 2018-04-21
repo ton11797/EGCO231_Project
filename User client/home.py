@@ -146,17 +146,13 @@ class reserve_room(Frame):
 
 
 
-        varVar1 = IntVar(self)
-        R1 = Checkbutton(self, text="โปรเจตเตอร์",variable=varVar1,onvalue = 1, offvalue = 0)
-        R2 = Checkbutton(self, text="คอมพิวเตอร์",onvalue = 1, offvalue = 0)
-        R3 = Checkbutton(self, text="ไมโครโฟน",onvalue = 1, offvalue = 0)
 
 
         Button(self,text='ยืนยัน',command=lambda : self.Book(room,begin_time,end_time,date)).place(x=80,y=330)
         Button(self,text='ล้างข้อมูล',command=lambda :self.Clear(room,begin_time,end_time,date)).place(x=180,y=330)
 
 
-    def Clear(self,room,begin_time,end_time,combo4):
+    def Clear(self,room,begin_time,end_time,date):
         room.set('')
         begin_time.set('')
         end_time.set('')
@@ -164,9 +160,9 @@ class reserve_room(Frame):
 
     def Book(self,room,begin_time,end_time,date):
         print (date.selection_get())
-        import datetime
-        now = datetime.datetime.now()
-        print (now.year)
+        yy,mm,dd = date.selection_get().split("-")
+        print (dd+"/"+mm+"/"+yy)
+
         if room.get()!="" and begin_time.get()!="" and end_time.get()!="":
             data={
                 "Data":[
