@@ -6,8 +6,14 @@ from tkcalendar import Calendar, DateEntry
 import json
 import api
 import time
+import os
+myfile="./tmp"
 A = api.API_cen()
+if not(os.path.isfile(myfile)):
+    exit()
 A.read_login()
+
+
 class home(Tk):
 
     def __init__(self):
@@ -29,9 +35,14 @@ class home(Tk):
         self.show_frame("reserve_room")
         #get roomlist
         # self.room_list = requests.get(fileip+"/list")
-
+        def on_closing():
+            if os.path.isfile(myfile):
+                os.remove(myfile)
+            self.destroy()
         # run
+        self.protocol("WM_DELETE_WINDOW", on_closing)
         self.mainloop()
+    
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
