@@ -150,6 +150,7 @@ class Book:
 		self.respond 	= {"status":"sucess","error":"none"}
 		self.respond_err = {"status":"fail","error":"Have reservations !!"}
 		self.respond_cerr = {"status":"fail","error":"Not Have Book on this requests !!"}
+		self.respond_cerr2 = {"status":"fail","error":"Error time Book"}
 		self.Res = {}
 	
 	def JsonForm(self,cookie,date,time):
@@ -178,13 +179,17 @@ class Book:
 	def At(self,JSONINPUT):
 		set_return = []
 		for data in JSONINPUT['Data']:
-			Json_Form = self.JsonForm(JSONINPUT['cookie_session'],
-								data['date'],data['time'])
-			if self.checkBook(data['room'],Json_Form ) :
-				DB.insert_schedule(data['room'],Json_Form )
-				set_return.append(self.respond)
+			s,e  = [datetime.strptime(t,'%H:%M') for t in data['time'].split('-')]
+			if(s >= e):
+				set_return.append(self.respond_cerr2)
 			else:
-				set_return.append(self.respond_err)
+				Json_Form = self.JsonForm(JSONINPUT['cookie_session'],
+									data['date'],data['time'])
+				if self.checkBook(data['room'],Json_Form ) :
+					DB.insert_schedule(data['room'],Json_Form )
+					set_return.append(self.respond)
+				else:
+					set_return.append(self.respond_err)
 		self.Res['respond'] = set_return
 		return json.dumps(self.Res,sort_keys=True,indent=2)
 

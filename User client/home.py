@@ -72,7 +72,7 @@ class Scrollable(ttk.Frame):
 
 class search_room(Frame):
 
-    def search_list_room(self,room,day,month,year,time,list_time):
+    def search_list_room(self,room,day,month,year):
         for widget in self.scrollable_body.winfo_children():
             widget.destroy()
         
@@ -92,31 +92,31 @@ class search_room(Frame):
         self.controller = controller
 
         #ห้อง
+        lb = Label(self,text = 'ห้อง')
+        lb.place(x=10,y=10)
         room = ttk.Combobox(self,width=5,state='readonly')
-        room.place(x=35,y=10)
-        room['value'] = ('','6272','6273','6274',"6275","6276","309/1","309/2","310")
+        room.place(x= 10+35,y=10)
+        room['value'] = ('','6272','6273','6274',"6275","6276","309/1","309/2","310","meeting room")
         room.current(0)
         #วัน
+        lb = Label(self,text = 'วัน/เดือน/ปี')
+        lb.place(x=115,y=10)
         day = ttk.Combobox(self,width=5,state='readonly')
-        day.place(x=115,y=10)
+        day.place(x=90+115,y=10)
         day['value'] =['']+ [i for i in range(1,32)]
         day.current(0)
         #เดือน
         month = ttk.Combobox(self,width=10,state='readonly')
-        month.place(x=205,y=10)
+        month.place(x=90+205,y=10)
         month['value'] = ('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม')
         month.current(0)
         #ปี
         year = ttk.Combobox(self,width=5,state='readonly')
-        year.place(x=310,y=10)
+        year.place(x= 110+310,y=10)
         year['value'] =['']+[i for i in range(2561,2571)]
         year.current(0)
-        #เวลา
-        list_time = ['','07.00-08.00','08.00-09.00','09.00-10.00','10.00-11.00','11.00-12.00','13.00-14.00','14.00-15.00','15.00-16.00','16.00-17.00','17.00-18.00','18.00-19.00','19.00-20.00','20.00-21.00','21.00-22.00']
-        time = ttk.Combobox(self,width=10,value = list_time,state='readonly')
-        time.place(x=400,y=10)
-        time.current(0)
-        Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year,time,list_time)).place(x=230,y=50)
+
+        Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year)).place(x=230,y=50)
         #show
         self.subframe = Frame(self,bg = "#283149",relief=SUNKEN)
         self.subframe.place(x=15,y=90)
@@ -140,18 +140,18 @@ class reserve_room(Frame):
         Label(self,text="เลือกห้องประชุม").place(x=80,y=20)
         room = ttk.Combobox(self)
         room.place(x=80,y=50)
-        room['value'] = ('','6272','6273','6274',"6275","6276","309/1","309/2","310")
+        room['value'] = ('','6272','6273','6274',"6275","6276","309/1","309/2","310","meeting room")
 
         Label(self,text="เลือกเวลา").place(x=280,y=20)
         begin_time = ttk.Combobox(self,width=5)
         begin_time.place(x=280,y=50)
-        begin_time['values'] =['-']+["07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"]
+        begin_time['values'] = ["07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"]
 
         Label(self,text="ถึง").place(x=340,y=50)
 
         end_time = ttk.Combobox(self,width=5)
         end_time.place(x=370,y=50)
-        end_time['values'] =['-']+["07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"]
+        end_time['values'] = ["07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"]
 
         Label(self,text="เลือกวัน").place(x=80,y=100)
         date = Calendar(self,width=20,height=100)
