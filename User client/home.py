@@ -124,7 +124,7 @@ class search_room(Frame):
         #ปี
         year = ttk.Combobox(self,width=5,state='readonly')
         year.place(x= 110+310,y=10)
-        year['value'] =['']+[i for i in range(2561,2571)]
+        year['value'] =['']+[i for i in range(2018,2029)]
         year.current(0)
 
         Button(self,text = 'ค้นหา',command = lambda:self.search_list_room(room,day,month,year)).place(x=230,y=50)
@@ -178,21 +178,10 @@ class reserve_room(Frame):
 
 
     def Book(self,room,begin_time,end_time,date):
-        import datetime
-        now = datetime.datetime.now()
         print (date.selection_get())
         yy,mm,dd = str(date.selection_get()).split("-")
         data_ = dd+"/"+mm+"/"+yy
-        if room.get()=="" or begin_time.get()=="" or end_time.get()=="":
-            tm.showinfo("Warning", "กรอกข้อมูลไม่ครบ")
-            return ""
-        if end_time.get() <= begin_time.get():
-            tm.showinfo("Warning", "เวลาไม่ถูกต้อง")
-            return ""
-        if int(dd) < now.day or int(mm) < now.month or int(yy) < now.year:
-            tm.showinfo("Warning", "วันที่ไม่ถูกต้อง")
-            return ""
-
+        print(room.get())
         if room.get()!="" and begin_time.get()!="" and end_time.get()!="":
             data={
                 "Data":[
