@@ -7,6 +7,8 @@ import json
 import api
 import time
 import os
+import datetime
+
 myfile="./tmp"
 A = api.API_cen()
 if not(os.path.isfile(myfile)):
@@ -178,10 +180,28 @@ class reserve_room(Frame):
 
 
     def Book(self,room,begin_time,end_time,date):
+        import datetime
+        now = datetime.datetime.now()
         print (date.selection_get())
         yy,mm,dd = str(date.selection_get()).split("-")
         data_ = dd+"/"+mm+"/"+yy
-        print(room.get())
+        validatetime = yy+"-"+mm+"-"+dd+" "+begin_time.get()
+        timestamp = time.mktime(datetime.datetime.strptime(validatetime, "%Y-%m-%d %H:%M").timetuple())
+        print(timestamp)
+        print(time.time())
+        if room.get()=="" or begin_time.get()=="" or end_time.get()=="":
+            tm.showinfo("Warning", "กรอกข้อมูลไม่ครบ")
+            return ""
+        if end_time.get() <= begin_time.get():
+            tm.showinfo("Warning", "เวลาไม่ถูกต้อง")
+            return ""
+        if time.time() > timestamp:
+            tm.showinfo("Warning", "วันssที่ไม่ถูกต้อง")
+            return ""
+
+        # if int(dd) < now.day or int(mm) < now.month or int(yy) < now.year:
+        #     tm.showinfo("Warning", "วันที่ไม่ถูกต้อง")
+        #     return ""
         if room.get()!="" and begin_time.get()!="" and end_time.get()!="":
             data={
                 "Data":[
