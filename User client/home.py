@@ -1,5 +1,6 @@
 from tkinter import ttk
 from tkinter import *
+
 import tkinter as tk
 from tkcalendar import Calendar, DateEntry
 import json
@@ -193,7 +194,10 @@ class cancel_room(Frame):
         print("cal")
         for widget in self.scrollable_body.winfo_children():
             widget.destroy()
-        filtered_data=filter_function(A.GetList(),"",A.get_user(),"")
+        if A.get_user()=="admin":
+            filtered_data=filter_function(A.GetList(),"","","")
+        else:
+            filtered_data=filter_function(A.GetList(),"",A.get_user(),"")
         for f_data in filtered_data:
             dtime = f_data[2].split()
             data = []
@@ -213,7 +217,10 @@ class cancel_room(Frame):
         print(datadic)
         for widget in self.scrollable_body.winfo_children():
             widget.destroy()
-        filtered_data=filter_function(A.GetList(),"",A.get_user(),"")
+        if A.get_user()=="admin":
+            filtered_data=filter_function(A.GetList(),"","","")
+        else:
+            filtered_data=filter_function(A.GetList(),"",A.get_user(),"")
         for f_data in filtered_data:
             dtime = f_data[2].split()
             data = []
@@ -238,8 +245,11 @@ class cancel_room(Frame):
         self.subframe = Frame(self,bg = "#283149",relief=SUNKEN)
         self.subframe.place(x=15,y=90)
 
-        self.scrollable_body = Scrollable(self.subframe, width=30)        
-        self.filtered_data=filter_function(A.GetList(),"",A.get_user(),"")
+        self.scrollable_body = Scrollable(self.subframe, width=30)
+        if A.get_user()=="admin":
+            self.filtered_data=filter_function(A.GetList(),"","","")
+        else:
+            self.filtered_data=filter_function(A.GetList(),"",A.get_user(),"")
         i =0
         for f_data in self.filtered_data:
             dtime = f_data[2].split()

@@ -1,6 +1,8 @@
 #import
 from pymongo import MongoClient
 import random
+import uuid
+import hashlib
 import string
 from datetime import datetime, time as datetime_time, timedelta
 import pprint
@@ -49,7 +51,11 @@ class database:
 		self.session = self.db['loginSession']
 		self.user = self.db['userData']
 		self.user.delete_one({"username":"admin"}) 
-		self.user.insert_one({"username":"admin","password":config['adminpassword']}) 
+		self.user.insert_one({"username":"admin","password":self.hash_password(config['adminpassword'])})
+	
+	def hash_password(self,password):
+		return hashlib.sha256(password.encode()).hexdigest()
+
 	def have_user(self,username):
 		if str(self.user.find_one({"username":username})) == "None":
 			return False
