@@ -619,3 +619,22 @@ test
 [login]: ton1234 login at 2018/04/21 15:05:59
 [login]: ton1234 login at 2018/04/21 15:06:14
 [login]: real2 login at 2018/04/21 15:52:55
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[login]: oat123456 login at 2018/04/22 14:49:16
+[login]: oat123456 login at 2018/04/22 15:04:14
+[login]: oat123456 login at 2018/04/22 15:05:11
+[login]: oat123456 login at 2018/04/22 15:06:39
+[login]: oat123456 login at 2018/04/22 15:07:37
+[login]: oat123456 login at 2018/04/22 15:08:16
+[login]: oat123456 login at 2018/04/22 15:09:09
+[login]: oat123456 login at 2018/04/22 15:12:15
+[login]: oat123456 login at 2018/04/22 15:13:39
+[login]: oat123456 login at 2018/04/22 15:17:26
+[login]: oat123456 login at 2018/04/22 15:20:47
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
+[login]: oat123456 login at 2018/04/22 15:49:05
+[login]: oat123456 login at 2018/04/22 15:51:31
+[Warning]: database no auth
+[info]:connection database mongodb://localhost:27017
