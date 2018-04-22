@@ -1,6 +1,6 @@
 from tkinter import ttk
 from tkinter import *
-
+import tkinter.messagebox as tm
 import tkinter as tk
 from tkcalendar import Calendar, DateEntry
 import json
@@ -169,21 +169,24 @@ class reserve_room(Frame):
     def Book(self,room,begin_time,end_time,date):
         print (date.selection_get())
         yy,mm,dd = str(date.selection_get()).split("-")
-        print (dd+"/"+mm+"/"+yy)
+        data_ = dd+"/"+mm+"/"+yy
         print(room.get())
         if room.get()!="" and begin_time.get()!="" and end_time.get()!="":
             data={
                 "Data":[
                     {
                         "room":"%s"%(room.get()),
-                        "date":"%s"%(begin_time.get()),
-                        "time":"%s"%(end_time.get())
+                        "date":"%s"%(data_),
+                        "time":"%s"%(begin_time.get()+"-"+end_time.get())
                     },
                 ],
 
             }
-            print(data)
-            A.SendBook(data)
+            status = json.loads(A.SendBook(data))['respond'][0]
+            if (status['status']=="sucess"):
+                tm.showinfo("BOOK info", "Done")
+            else:
+                tm.showerror("BOOK error", status['error'])
             #send data
             #headers = {'Content-Type': 'application/json'}
             #reaponse = requests.post(fileip+"/book",headers=headers,data= json.dumps(DATA))
