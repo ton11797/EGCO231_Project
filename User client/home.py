@@ -18,8 +18,8 @@ A.read_login()
 #############################################################################################################
 #variable theme 
 #Color = ["#282828","#070705","#84e611","#50524d",'white']  #GreenForce
-Color = ["#283149","#404B69","#F73859","#DBEDF3",'white'] #Candle
-#Color = ["white","#404B69","#b0fb45","#DBEDF3",'black'] #mongo color
+#Color = ["#283149","#404B69","#F73859","#DBEDF3",'white'] #Candle
+Color = ["white","#404B69","#b0fb45","#DBEDF3",'black'] #mongo color
 
 def font(size = 15):
     return ("Codia new",size,"bold")
@@ -132,7 +132,7 @@ class search_room(Frame):
             dtime = f_data[2].split()
             time_s = dtime[1].split('-')
             dd,mm,yy = str(dtime[0]).split("/")
-            validatetime = yy+"-"+mm+"-"+dd+" "+time_s[0]
+            validatetime = yy+"-"+mm+"-"+dd+" "+time_s[1]
             timestamp = time.mktime(datetime.datetime.strptime(validatetime, "%Y-%m-%d %H:%M").timetuple())
             if time.time() < timestamp:#ถ้าเวลาจริง น้อยกว่า เวลาที่จอง ->จองอนาคต
                 text = "ห้อง \t: "+f_data[0]+"\n"+"วัน/เดือน/ปี\t: "+dtime[0]+" "+"\n"+" เวลา \t: "+ dtime[1] +"\n"+" ผู้จอง \t: "+ f_data[1]
