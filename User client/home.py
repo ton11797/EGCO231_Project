@@ -18,8 +18,8 @@ A.read_login()
 #############################################################################################################
 #variable theme 
 #Color = ["#282828","#070705","#84e611","#50524d",'white']  #GreenForce
-#Color = ["#283149","#404B69","#F73859","#DBEDF3",'white'] #Candle
-Color = ["white","#404B69","#b0fb45","#DBEDF3",'black'] #mongo color
+Color = ["#283149","#404B69","#F73859","#DBEDF3",'white'] #Candle
+#Color = ["white","#404B69","#b0fb45","#DBEDF3",'black'] #mongo color
 
 def font(size = 15):
     return ("Codia new",size,"bold")
